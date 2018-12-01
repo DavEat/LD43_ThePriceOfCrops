@@ -31,6 +31,7 @@ public class Farmer : MonoBehaviour {
 
     private House _targettedHouse;
 
+    [SerializeField] private Animator _animator;
     private NavMeshAgent _agent;
     private Transform _transform;
     #endregion
@@ -54,6 +55,7 @@ public class Farmer : MonoBehaviour {
         {
             if (Vector3.Distance(_transform.position, GameManager.inst.grenary.position) < _storeCropsDst) //is at destination
             {
+                AnimTriggerStopCarry();
                 Grenary.inst.AddFood(_draggedCrops);
                 Destroy(_draggedCrops.gameObject);
                 _draggedCrops = null;
@@ -150,6 +152,8 @@ public class Farmer : MonoBehaviour {
         }
         //else if (stats != Stats.idle)
         //    stats = Stats.idle;
+
+        AnimSetSpeed(_agent.velocity.magnitude);
     }
     #endregion
     #region Functions
@@ -252,15 +256,17 @@ public class Farmer : MonoBehaviour {
             {
                 if (_plantPoint.crops == null)
                 {
+                    AnimTriggerPlant();
                     _needToPlant = true;
                     _crtPlantingCropsData = _field.cropsData;
                     _plantTime = Time.time + _crtPlantingCropsData.plantTime;
                 }
                 else
                 {
+                    AnimTriggerHarvest();
                     stats = Stats.harvest;
                     _draggedCrops = _plantPoint.crops;
-                    _draggedCrops._transform.parent = _transform;
+                    _draggedCrops._transform.parent = _dragPosition;
                     _draggedCrops._transform.position = _dragPosition.position;
                     _draggedCrops._transform.rotation = Quaternion.identity;
                     _plantPoint.crops = null;
@@ -289,4 +295,23 @@ public class Farmer : MonoBehaviour {
     }
     #endregion
 
+
+    #region AnimationFunction
+    public void AnimTriggerStopCarry()
+    {
+        _animator.SetTrigger("StopCarry");
+    }
+    public void AnimTriggerPlant()
+    {
+        _animator.SetTrigger("Plant");
+    }
+    public void AnimTriggerHarvest()
+    {
+        _animator.SetTrigger("Harvest");
+    }
+    public void AnimSetSpeed(float value)
+    {
+        _animator.SetFloat("Speed", value);
+    }
+    #endregion
 }
