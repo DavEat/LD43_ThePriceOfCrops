@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class Farmer : MonoBehaviour {
 
-    public enum Stats { idle, plant, harvest }
+    public enum Stats { idle, move, plant, harvest, sacrifice }
 
     #region Vars
     public Stats stats;
@@ -50,8 +50,13 @@ public class Farmer : MonoBehaviour {
         }
         else if (_field != null)
             FieldManagement();
-        else if (stats != Stats.idle)
-            stats = Stats.idle;
+        else if (stats == Stats.sacrifice)
+        {
+            if (Vector3.Distance(_transform.position, GameManager.inst.sacrificePlace.position) < _storeCropsDst) //is at destination
+                Sacrifice.inst.SacrificeFarmer(this);
+        }
+        //else if (stats != Stats.idle)
+        //    stats = Stats.idle;
     }
     #endregion
     #region Functions
@@ -62,15 +67,46 @@ public class Farmer : MonoBehaviour {
             canBeSelected = false;
         return canBeSelected;
     }
-    public void SetDestination(Vector3 dst)
+    public void Selected()
     {
         stats = Stats.idle;
+        _needToPlant = false;
         _field = null;
+        if (_plantPoint != null)
+        {
+            _plantPoint.targetted = false;
+            _plantPoint = null;
+        }
+        _agent.SetDestination(_transform.position);
+    }
+    public void SetDestination(Vector3 dst)
+    {
+        if (_needToPlant) return;
+
+        stats = Stats.move;
+        _field = null;
+        if (_plantPoint != null)
+            _plantPoint.targetted = false;
         _agent.SetDestination(dst);
     }
-    public void SetOccupation(Field field)
+    public void SendToField(Field field)
     {
+        if (_needToPlant) return;
+
+        if (_plantPoint != null)
+            _plantPoint.targetted = false;
         _field = field;
+    }
+    public void SendToSacrifice()
+    {
+        if (_needToPlant) return;
+
+        stats = Stats.sacrifice;
+        _needToPlant = false;
+        _field = null;
+        if (_plantPoint != null)
+            _plantPoint.targetted = false;
+        _agent.SetDestination(GameManager.inst.sacrificePlace.position);
     }
     private void FieldManagement()
     {

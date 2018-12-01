@@ -53,7 +53,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layerMask:
     serializedVersion: 2
-    m_Bits: 2164736
+    m_Bits: 18941952
   villageCenter: {fileID: 0}
   grenary: {fileID: 0}
+  sacrificePlace: {fileID: 0}
   foodStored: 0

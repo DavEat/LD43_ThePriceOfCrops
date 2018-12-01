@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Field
   - Interface
+  - Sacrifice
   layers:
   - Default
   - TransparentFX
@@ -33,7 +34,7 @@ TagManager:
   - Interface
   - 
   - 
-  - 
+  - Building
   - 
   - 
   - 

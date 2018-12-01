@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
     private Farmer _selectedFarmer;
     private Field _field;
 
-    public Transform villageCenter, grenary = null;
+    public Transform villageCenter, grenary = null, sacrificePlace = null;
 
     public int foodStored = 0;
     #endregion
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour {
     {
         if (Input.GetMouseButtonDown(0))
             _mouseDownPos = Input.mousePosition;
-        else if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 0.5f)
+        else if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 1.5f)
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour {
                 Field f = hit.transform.GetComponent<Field>();
                 if (_selectedFarmer != null)
                 {
-                    _selectedFarmer.SetOccupation(f);
+                    _selectedFarmer.SendToField(f);
                     _selectedFarmer = null;
                 }
                 else
@@ -81,16 +81,22 @@ public class GameManager : MonoBehaviour {
                 if (_selectedFarmer == null)
                     hit.transform.GetComponent<WorldButton>().OnClick();
                 break;
+            case "Sacrifice":
+                if (_selectedFarmer != null)
+                    _selectedFarmer.SendToSacrifice();
+                break;
             default:
                 Debug.LogErrorFormat("No tag found for this collider : {0}", hit.collider.name);
                 break;
         }
     }
     private void FarmerClicked(Farmer farmer)
-    {
-        
+    {        
         if (farmer.CanBeSelected() && _selectedFarmer == null)
+        {
             _selectedFarmer = farmer;
+            _selectedFarmer.Selected();
+        }
     }
     private void MoveSelectedFarmer(Vector3 to)
     {
