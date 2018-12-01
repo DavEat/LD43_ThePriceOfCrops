@@ -69,7 +69,9 @@ public class Farmer : MonoBehaviour {
 
                         _eatAgain = wannaEatTime < Time.time;
                         int foodNutrition = Grenary.inst.GetClaimedFood(_wannaEatTargetIds[1]);
-                        wannaEatTime = Time.time + foodNutrition;
+                        if (wannaEatTime - Time.time < 0)
+                            wannaEatTime = 0;
+                        wannaEatTime += Time.time + foodNutrition;
 
                         ResetPreviousStatsAfterEat(!_eatAgain);
                     }
@@ -81,7 +83,10 @@ public class Farmer : MonoBehaviour {
                         //Add Anim eat + sound
                         _eatAgain = wannaEatTime < Time.time;
                         int foodNutrition = _plantPoint.crops.GetFoodValue();
-                        wannaEatTime = Time.time + foodNutrition;
+
+                        if (wannaEatTime - Time.time < 0)
+                            wannaEatTime = 0;
+                        wannaEatTime += Time.time + foodNutrition;
 
                         Destroy(_plantPoint.crops.gameObject);
                         _plantPoint.crops = null;
@@ -107,7 +112,9 @@ public class Farmer : MonoBehaviour {
                         Debug.Log("No food found and die");
                         this.enabled = false;
                         Destroy(gameObject);
-                    } Debug.Log("No food found");
+                    }
+                    _eatAgain = false;
+                    Debug.Log("No food found");
                 }
                 else
                 {
@@ -186,6 +193,12 @@ public class Farmer : MonoBehaviour {
             _plantPoint.targetted = false;
         _agent.SetDestination(GameManager.inst.sacrificePlace.position);
     }
+    public void SendToEat()
+    {
+        if (wannaEatTime - Time.time < maxEat)
+            _eatAgain = true;
+        else Debug.Log("eat to mush already");
+    }
     private void FieldManagement()
     {
         if (_needplantPoint)
@@ -245,7 +258,7 @@ public class Farmer : MonoBehaviour {
     {
         stats = _previousStats;
         if (stats == Stats.idle && move)
-            SetDestination(GameManager.inst.villageCenter.position);
+            _agent.SetDestination(GameManager.inst.villageCenter.position);
     }
     #endregion
 

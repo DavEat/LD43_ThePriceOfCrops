@@ -81,11 +81,17 @@ public class GameManager : MonoBehaviour {
                 break;
             case "Sacrifice":
                 if (_selectedFarmer != null)
+                {
                     _selectedFarmer.SendToSacrifice();
+                    _selectedFarmer = null;
+                }
                 break;
             case "Grenary":
-                //if (_selectedFarmer != null)
-                //    send to eat    
+                if (_selectedFarmer != null)
+                {
+                    _selectedFarmer.SendToEat();
+                    _selectedFarmer = null;
+                }
                 break;
             default:
                 Debug.LogErrorFormat("No tag found for this collider : {0}", hit.collider.name);

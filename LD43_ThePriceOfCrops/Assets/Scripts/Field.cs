@@ -103,7 +103,7 @@ public class Field : MonoBehaviour {
 
         for (int i = 0; i < _plantPoints.Length; i++)
         {
-            if (_plantPoints[i].crops != null && _plantPoints[i].crops.CanBeHarvest() && _plantPoints[i].crops.GetFoodValue() > food)
+            if (!_plantPoints[i].targetted && _plantPoints[i].crops != null && _plantPoints[i].crops.CanBeHarvest() && _plantPoints[i].crops.GetFoodValue() > food)
             {
                 id = i;
                 food = _plantPoints[i].crops.GetFoodValue();
