@@ -3,24 +3,31 @@ using UnityEngine.AI;
 
 public class Farmer : MonoBehaviour {
 
-    public enum Stats { idle, move, plant, harvest, sacrifice }
+    public enum Stats { idle, move, plant, harvest, sacrifice, goToEat }
 
     #region Vars
     public Stats stats;
+    private Stats _previousStats;
 
     private Field _field;
     private Field.PlantPoint _plantPoint;
-    private int _crtFielIndex = -1;
+    private int _crtPLantPointIndex = -1;
     private bool _needplantPoint = true, _needToPlant = false;
     private float _plantTime = -1;
     private CropsData _crtPlantingCropsData;
 
     private const float _harvestDst = 0.4f;
-    private const float _storeCropsDst = 0.2f;
+    private const float _storeCropsDst = 1.2f;
 
     private Crops _draggedCrops = null;
 
+    [SerializeField] private int wannaEatEachAtStart = 50; // in sec
+    private float wannaEatTime;
+    private int[] _wannaEatTargetIds;
+    private bool _eatAgain = false;
+
     [SerializeField] private Transform _dragPosition = null;
+    [SerializeField] private int maxEat = 180;
 
     private NavMeshAgent _agent;
     private Transform _transform;
@@ -30,22 +37,91 @@ public class Farmer : MonoBehaviour {
     {
         _agent = GetComponent<NavMeshAgent>();
         _transform = GetComponent<Transform>();
+
+        wannaEatTime = Time.time + wannaEatEachAtStart;
     }
 	
 	private void Update ()
     {
-        if (_needToPlant)
+        if (_needToPlant) //waiting 
         {
             if (_plantTime < Time.time)
                 Plant();
         }
-        else if (_draggedCrops != null)
+        else if (_draggedCrops != null) //waiting 
         {
             if (Vector3.Distance(_transform.position, GameManager.inst.grenary.position) < _storeCropsDst) //is at destination
             {
-                GameManager.inst.foodStored += _draggedCrops.GetFoodValue();
+                Grenary.inst.AddFood(_draggedCrops);
                 Destroy(_draggedCrops.gameObject);
                 _draggedCrops = null;
+            }
+        }
+        else if (wannaEatTime < Time.time || _eatAgain)
+        {
+            if (stats == Stats.goToEat)
+            {
+                if (_wannaEatTargetIds[0] == -1)
+                {
+                    if (Vector3.Distance(_transform.position, GameManager.inst.grenary.position) < _storeCropsDst)
+                    {
+                        //Add Anim eat + sound
+
+                        _eatAgain = wannaEatTime < Time.time;
+                        int foodNutrition = Grenary.inst.GetClaimedFood(_wannaEatTargetIds[1]);
+                        wannaEatTime = Time.time + foodNutrition;
+
+                        ResetPreviousStatsAfterEat(!_eatAgain);
+                    }
+                }
+                else
+                {
+                    if (Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst)
+                    {
+                        //Add Anim eat + sound
+                        _eatAgain = wannaEatTime < Time.time;
+                        int foodNutrition = _plantPoint.crops.GetFoodValue();
+                        wannaEatTime = Time.time + foodNutrition;
+
+                        Destroy(_plantPoint.crops.gameObject);
+                        _plantPoint.crops = null;
+                        _plantPoint.targetted = false;
+                        _plantPoint = null;
+                        _needplantPoint = true;
+                        //_crtPLantPointIndex = -1;
+
+                        ResetPreviousStatsAfterEat(!_eatAgain);
+                    }
+                }
+                
+                //If low in food try to find more
+            }
+            else
+            {
+                //Find nearestFood and better to eat
+                _wannaEatTargetIds = FoodManager.inst.FindFood();
+                if (_wannaEatTargetIds[0] == -1 && _wannaEatTargetIds[1] == -1)
+                {
+                    if (wannaEatTime < Time.time)
+                    {
+                        Debug.Log("No food found and die");
+                        this.enabled = false;
+                        Destroy(gameObject);
+                    } Debug.Log("No food found");
+                }
+                else
+                {
+                    _previousStats = stats;
+                    stats = Stats.goToEat;
+                    if (_wannaEatTargetIds[0] == -1) //grenary
+                        _agent.SetDestination(GameManager.inst.grenary.position);
+                    else //field
+                    {
+                        _plantPoint = FoodManager.inst.GetFieldPlantPoint(_wannaEatTargetIds);
+                        _plantPoint.targetted = true;
+                        _agent.SetDestination(_plantPoint.position);
+                    }
+                }
             }
         }
         else if (_field != null)
@@ -63,7 +139,7 @@ public class Farmer : MonoBehaviour {
     public bool CanBeSelected()
     {
         bool canBeSelected = true;
-        if (_needToPlant || _draggedCrops != null)
+        if (_needToPlant || _draggedCrops != null || stats == Stats.goToEat)
             canBeSelected = false;
         return canBeSelected;
     }
@@ -95,6 +171,8 @@ public class Farmer : MonoBehaviour {
 
         if (_plantPoint != null)
             _plantPoint.targetted = false;
+
+        _needplantPoint = true;
         _field = field;
     }
     public void SendToSacrifice()
@@ -113,8 +191,8 @@ public class Farmer : MonoBehaviour {
         if (_needplantPoint)
         {
             if (Options.autoPlantAfterHarvest)
-                _plantPoint = _field.GetPlantPoint(_crtFielIndex, Stats.idle);
-            else _plantPoint = _field.GetPlantPoint(_crtFielIndex + 1, stats);
+                _plantPoint = _field.GetPlantPoint(_crtPLantPointIndex, Stats.idle);
+            else _plantPoint = _field.GetPlantPoint(_crtPLantPointIndex + 1, stats);
         }
         if (_plantPoint == null)
         {
@@ -122,13 +200,13 @@ public class Farmer : MonoBehaviour {
             //set destination to Village center
             _agent.SetDestination(GameManager.inst.villageCenter.position);
             stats = Stats.idle;
-            _crtFielIndex = -1;
+            _crtPLantPointIndex = -1;
         }
         else
         {
             _plantPoint.targetted = true;
             _needplantPoint = false;
-            _crtFielIndex = _plantPoint.index;
+            _crtPLantPointIndex = _plantPoint.index;
             _agent.SetDestination(_plantPoint.position);
             if (Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst) //is at destination
             {
@@ -162,6 +240,12 @@ public class Farmer : MonoBehaviour {
         _plantPoint = null;
         _needplantPoint = true;
         _needToPlant = false;
+    }
+    private void ResetPreviousStatsAfterEat(bool move)
+    {
+        stats = _previousStats;
+        if (stats == Stats.idle && move)
+            SetDestination(GameManager.inst.villageCenter.position);
     }
     #endregion
 

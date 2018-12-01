@@ -229,7 +229,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: 0
+  wannaEatEachAtStart: 50
   _dragPosition: {fileID: 4488735817662088}
+  maxEat: 180
 --- !u!136 &136798594289317720
 CapsuleCollider:
   m_ObjectHideFlags: 1

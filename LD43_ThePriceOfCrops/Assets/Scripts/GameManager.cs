@@ -16,8 +16,6 @@ public class GameManager : MonoBehaviour {
     private Field _field;
 
     public Transform villageCenter, grenary = null, sacrificePlace = null;
-
-    public int foodStored = 0;
     #endregion
     #region MonoFunctions
     private void Awake()
@@ -31,8 +29,8 @@ public class GameManager : MonoBehaviour {
 	private void Update ()
     {
         if (Input.GetMouseButtonDown(0))
-            _mouseDownPos = Input.mousePosition;
-        else if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 1.5f)
+        //    _mouseDownPos = Input.mousePosition;
+        //if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 1.5f)
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -55,7 +53,7 @@ public class GameManager : MonoBehaviour {
         }
 
         //Debug.Log
-            switch (hit.collider.tag)
+        switch (hit.collider.tag)
         {
             case "Farmer":
                 FarmerClicked(hit.transform.GetComponent<Farmer>());
@@ -84,6 +82,10 @@ public class GameManager : MonoBehaviour {
             case "Sacrifice":
                 if (_selectedFarmer != null)
                     _selectedFarmer.SendToSacrifice();
+                break;
+            case "Grenary":
+                //if (_selectedFarmer != null)
+                //    send to eat    
                 break;
             default:
                 Debug.LogErrorFormat("No tag found for this collider : {0}", hit.collider.name);

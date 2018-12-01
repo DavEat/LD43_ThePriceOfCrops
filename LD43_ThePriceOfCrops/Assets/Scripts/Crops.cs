@@ -25,7 +25,7 @@ public class Crops : MonoBehaviour
 
         growEnd = Time.time + _cropsData.growTime;
     }
-    public bool CanHarvest()
+    public bool CanBeHarvest()
     {
         return growEnd < Time.time;
     }
@@ -40,6 +40,10 @@ public class Crops : MonoBehaviour
     public int GetFoodValue()
     {
         return _cropsData.food;
+    }
+    public int GetCropId()
+    {
+        return _cropsData.id;
     }
     #endregion
 }

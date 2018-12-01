@@ -9,9 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 999ebc1031b1d5c45aa348b1d816bd5f, type: 3}
-  m_Name: Pumkin
+  m_Name: Pumpkin
   m_EditorClassIdentifier: 
+  id: 1
+  name: Pumpkin
   plantTime: 2
-  growTime: 10
-  food: 1
+  growTime: 5
+  food: 25
   obj: {fileID: 114578762556077556, guid: 2fe4175628981f44395628f709452545, type: 2}

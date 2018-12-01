@@ -9,6 +9,8 @@ TagManager:
   - Field
   - Interface
   - Sacrifice
+  - House
+  - Grenary
   layers:
   - Default
   - TransparentFX

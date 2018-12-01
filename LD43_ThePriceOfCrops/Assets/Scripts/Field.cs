@@ -18,7 +18,7 @@ public class Field : MonoBehaviour {
     private void Start ()
     {
         InitPlantPoint();
-        cropsData = CropsManager.inst.GetCrops(0);
+        cropsData = FoodManager.inst.GetCrops(1);
     }
 	private void Update ()
     {
@@ -34,7 +34,7 @@ public class Field : MonoBehaviour {
     }
     public void SelectCrops(int id)
     {
-        cropsData = CropsManager.inst.GetCrops(id);
+        cropsData = FoodManager.inst.GetCrops(id);
     }
     private void InitPlantPoint()
     {
@@ -50,26 +50,10 @@ public class Field : MonoBehaviour {
         }
     }
     #region ForFarmer
-    /*public PlantPoint GetPlantPoint(Farmer.Stats stats = Farmer.Stats.idle)
+    public PlantPoint GetPlantPointById(int id)
     {
-        PlantPoint harvest = null, plant = null;
-        for (int i = startIndex; i < _plantPoints.Length; i++)
-        {
-            if (_plantPoints[i].targetted) continue;
-
-            if (_plantPoints[i].crops != null)
-            {
-                if (_plantPoints[i].crops.CanHarvest() && stats != Farmer.Stats.plant)
-                {
-                    harvest = _plantPoints[i];
-                    break;
-                }
-            }
-            else if (plant == null && stats != Farmer.Stats.harvest)
-                plant = _plantPoints[i];
-        }
-        return harvest == null ? plant : harvest;
-    }*/
+        return _plantPoints[id];
+    }
     public PlantPoint GetPlantPoint(int startIndex, Farmer.Stats stats)
     {
         PlantPoint target = null;
@@ -94,7 +78,7 @@ public class Field : MonoBehaviour {
 
             if (targetHarvest)
             {
-                if (_plantPoints[i].crops == null || !_plantPoints[i].crops.CanHarvest()) continue;
+                if (_plantPoints[i].crops == null || !_plantPoints[i].crops.CanBeHarvest()) continue;
             }
             else if (_plantPoints[i].crops != null) continue;
 
@@ -111,6 +95,22 @@ public class Field : MonoBehaviour {
     {
         plantPoint.crops = Instantiate(data.obj, plantPoint.position, Quaternion.identity, _cropsParent);
         plantPoint.crops.Init(data);
+    }
+    public int[] FindBestCorp()
+    {
+        int id = -1;
+        int food = -1;
+
+        for (int i = 0; i < _plantPoints.Length; i++)
+        {
+            if (_plantPoints[i].crops != null && _plantPoints[i].crops.CanBeHarvest() && _plantPoints[i].crops.GetFoodValue() > food)
+            {
+                id = i;
+                food = _plantPoints[i].crops.GetFoodValue();
+            }
+        }
+
+        return new int[] { id, food};
     }
     #endregion
     #endregion
