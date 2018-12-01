@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class Farmer : MonoBehaviour {
 
-    public enum Stats { idle, move, plant, harvest, sacrifice, goToEat }
+    public enum Stats { idle, move, plant, harvest, sacrifice, goToEat, goToHouse }
 
     #region Vars
     public Stats stats;
@@ -28,6 +28,8 @@ public class Farmer : MonoBehaviour {
 
     [SerializeField] private Transform _dragPosition = null;
     [SerializeField] private int maxEat = 180;
+
+    private House _targettedHouse;
 
     private NavMeshAgent _agent;
     private Transform _transform;
@@ -55,6 +57,14 @@ public class Farmer : MonoBehaviour {
                 Grenary.inst.AddFood(_draggedCrops);
                 Destroy(_draggedCrops.gameObject);
                 _draggedCrops = null;
+            }
+        }
+        else if (stats == Stats.goToHouse)
+        {
+            if (_targettedHouse != null && Vector3.Distance(_transform.position, _targettedHouse.door.position) < _storeCropsDst)
+            {
+                _targettedHouse.FarmerArrived(this);
+                _targettedHouse = null;
             }
         }
         else if (wannaEatTime < Time.time || _eatAgain)
@@ -146,7 +156,7 @@ public class Farmer : MonoBehaviour {
     public bool CanBeSelected()
     {
         bool canBeSelected = true;
-        if (_needToPlant || _draggedCrops != null || stats == Stats.goToEat)
+        if (_needToPlant || _draggedCrops != null || stats == Stats.goToEat || stats == Stats.goToHouse)
             canBeSelected = false;
         return canBeSelected;
     }
@@ -198,6 +208,23 @@ public class Farmer : MonoBehaviour {
         if (wannaEatTime - Time.time < maxEat)
             _eatAgain = true;
         else Debug.Log("eat to mush already");
+    }
+    public void SendToHouse(House house)
+    {
+        stats = Stats.goToHouse;
+        _needToPlant = false;
+        _field = null;
+        if (_plantPoint != null)
+            _plantPoint.targetted = false;
+
+        _targettedHouse = house;
+        _agent.SetDestination(house.door.position);
+    }
+    public void LeaveHouse()
+    {
+        //_targettedHouse = null;
+        stats = Stats.idle;
+        _agent.SetDestination(GameManager.inst.villageCenter.position);
     }
     private void FieldManagement()
     {

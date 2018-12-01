@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour {
 
     private Vector2 _mouseDownPos;
 
+    [SerializeField] private Farmer _farmerPrefab;
+
     private int _rayMaxDist = 100;
     [SerializeField] private LayerMask _layerMask;
 
@@ -93,6 +95,14 @@ public class GameManager : MonoBehaviour {
                     _selectedFarmer = null;
                 }
                 break;
+            case "House":
+                if (_selectedFarmer != null)
+                {
+                    House h = hit.collider.GetComponent<House>();
+                    h.AddFarmer(_selectedFarmer);
+                    _selectedFarmer = null;
+                }
+                break;
             default:
                 Debug.LogErrorFormat("No tag found for this collider : {0}", hit.collider.name);
                 break;
@@ -111,6 +121,11 @@ public class GameManager : MonoBehaviour {
         _selectedFarmer.SetDestination(to);
         if (Options.unselectFarmerOnDestination)
             _selectedFarmer = null;
+    }
+    public Farmer InstatiateFarmer(Vector3 position, Quaternion rotation, Transform parent = null)
+    {
+        //if (parent == null) parent = transform.parent;
+        return Instantiate(_farmerPrefab, position, rotation, parent);
     }
     #endregion
 }
