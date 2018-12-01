@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour {
     {
         if (Input.GetMouseButtonDown(0))
             _mouseDownPos = Input.mousePosition;
-        else if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 0.1f)
+        else if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 0.5f)
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
     {
         if (_field != null && !hit.collider.CompareTag("Field"))
         {
-            _field.ShowInterface(false);
+            _field.ToggleInterface(false);
             _field = null;
         }
 
@@ -67,11 +67,14 @@ public class GameManager : MonoBehaviour {
             case "Field":
                 Field f = hit.transform.GetComponent<Field>();
                 if (_selectedFarmer != null)
+                {
                     _selectedFarmer.SetOccupation(f);
+                    _selectedFarmer = null;
+                }
                 else
                 {
                     _field = f;
-                    f.ShowInterface(true);
+                    f.ToggleInterface(true);
                 }
                 break;
             case "Interface":
@@ -83,13 +86,12 @@ public class GameManager : MonoBehaviour {
                 break;
         }
     }
-
     private void FarmerClicked(Farmer farmer)
     {
-        if (_selectedFarmer == null)
+        
+        if (farmer.CanBeSelected() && _selectedFarmer == null)
             _selectedFarmer = farmer;
     }
-
     private void MoveSelectedFarmer(Vector3 to)
     {
         _selectedFarmer.SetDestination(to);

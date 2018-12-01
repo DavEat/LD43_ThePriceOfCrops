@@ -10,7 +10,7 @@ public class Field : MonoBehaviour {
 
     [HideInInspector] public CropsData cropsData;
 
-    private PlantPoint[] plantPoints;
+    private PlantPoint[] _plantPoints;
 
     [SerializeField] private GameObject _interface;
     #endregion
@@ -26,9 +26,11 @@ public class Field : MonoBehaviour {
 	}
     #endregion
     #region Functions
-    public void ShowInterface(bool value)
+    public void ToggleInterface(bool value)
     {
-        _interface.SetActive(value);
+        if (_interface.activeSelf)
+            _interface.SetActive(false);
+        else _interface.SetActive(value);
     }
     public void SelectCrops(int id)
     {
@@ -36,39 +38,79 @@ public class Field : MonoBehaviour {
     }
     private void InitPlantPoint()
     {
-        plantPoints = new PlantPoint[_fieldSize.x * _fieldSize.y];
+        _plantPoints = new PlantPoint[_fieldSize.x * _fieldSize.y];
         for (int y = 0; y < _fieldSize.y; y++)
         {
             for (int x = 0; x < _fieldSize.x; x++)
             {
+                int index = y * _fieldSize.x + x;
                 int xPos = (y % 2 == 0 ? (x * 2) : ((_fieldSize.x - 1) - x) * 2);
-                plantPoints[y * _fieldSize.x + x] = new PlantPoint(new Vector3(xPos, 0, y * 2) + _cropsParent.position);
+                _plantPoints[index] = new PlantPoint(index, new Vector3(xPos, 0, y * 2) + _cropsParent.position);
             }
         }
     }
     #region ForFarmer
-    public PlantPoint GetPlantPoint(Farmer.Stats stats = Farmer.Stats.idle)
+    /*public PlantPoint GetPlantPoint(Farmer.Stats stats = Farmer.Stats.idle)
     {
         PlantPoint harvest = null, plant = null;
-        for (int i = 0; i < plantPoints.Length; i++)
+        for (int i = startIndex; i < _plantPoints.Length; i++)
         {
-            if (plantPoints[i].crops != null)
+            if (_plantPoints[i].targetted) continue;
+
+            if (_plantPoints[i].crops != null)
             {
-                if (plantPoints[i].crops.CanHarvest() && stats != Farmer.Stats.plant)
+                if (_plantPoints[i].crops.CanHarvest() && stats != Farmer.Stats.plant)
                 {
-                    harvest = plantPoints[i];
+                    harvest = _plantPoints[i];
                     break;
                 }
             }
             else if (plant == null && stats != Farmer.Stats.harvest)
-                plant = plantPoints[i];
+                plant = _plantPoints[i];
         }
         return harvest == null ? plant : harvest;
-    }
-    public void InitPlant(PlantPoint plantPoint)
+    }*/
+    public PlantPoint GetPlantPoint(int startIndex, Farmer.Stats stats)
     {
-        plantPoint.crops = Instantiate(cropsData.obj, plantPoint.position, Quaternion.identity, _cropsParent);
-        plantPoint.crops.Init(cropsData);
+        PlantPoint target = null;
+        if (stats == Farmer.Stats.harvest)
+            target = GetPlantPointToPlant(true, startIndex, _plantPoints.Length);
+        else if (stats == Farmer.Stats.plant)
+            target = GetPlantPointToPlant(false, startIndex, _plantPoints.Length);
+        else
+        {
+            target = GetPlantPointToPlant(true, startIndex, _plantPoints.Length);
+            if (target == null)
+                target = GetPlantPointToPlant(false, startIndex, _plantPoints.Length);
+        }
+        return target;
+    }
+    private PlantPoint GetPlantPointToPlant(bool targetHarvest, int startIndex, int endIndex)
+    {
+        PlantPoint plant = null;
+        for (int i = startIndex; i < endIndex; i++)
+        {
+            if (_plantPoints[i].targetted) continue;
+
+            if (targetHarvest)
+            {
+                if (_plantPoints[i].crops == null || !_plantPoints[i].crops.CanHarvest()) continue;
+            }
+            else if (_plantPoints[i].crops != null) continue;
+
+            plant = _plantPoints[i];
+            break;
+        }
+        if (plant == null && startIndex != 0)
+        {
+            plant = GetPlantPointToPlant(targetHarvest, 0, startIndex);
+        }
+        return plant;
+    }
+    public void InitPlant(PlantPoint plantPoint, CropsData data)
+    {
+        plantPoint.crops = Instantiate(data.obj, plantPoint.position, Quaternion.identity, _cropsParent);
+        plantPoint.crops.Init(data);
     }
     #endregion
     #endregion
@@ -76,13 +118,17 @@ public class Field : MonoBehaviour {
     [System.Serializable]
     public class PlantPoint
     {
+        public int index;
         public Vector3 position;
         public Crops crops;
+        public bool targetted;
 
-        public PlantPoint(Vector3 position)
+        public PlantPoint(int index, Vector3 position)
         {
+            this.index = index;
             this.position = position;
             crops = null;
+            targetted = false;
         }
     }
 }
