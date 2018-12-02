@@ -16,7 +16,7 @@ public class Farmer : MonoBehaviour {
     private float _plantTime = -1;
     private CropsData _crtPlantingCropsData;
 
-    private const float _harvestDst = 0.4f;
+    private const float _harvestDst = 1.1f;
     private const float _storeCropsDst = 1.2f;
 
     private Crops _draggedCrops = null;
@@ -49,7 +49,11 @@ public class Farmer : MonoBehaviour {
         if (_needToPlant) //waiting 
         {
             if (_plantTime < Time.time)
+            {
                 Plant();
+                _startedPlanting = false;
+                AnimTriggerEndPlant();
+            }
         }
         else if (_draggedCrops != null) //waiting 
         {
@@ -167,7 +171,7 @@ public class Farmer : MonoBehaviour {
     public void Selected()
     {
         stats = Stats.idle;
-        _needToPlant = false;
+        //_needToPlant = false;
         _field = null;
         if (_plantPoint != null)
         {
@@ -198,8 +202,6 @@ public class Farmer : MonoBehaviour {
     }
     public void SendToSacrifice()
     {
-        if (_needToPlant) return;
-
         stats = Stats.sacrifice;
         _needToPlant = false;
         _field = null;
@@ -232,6 +234,9 @@ public class Farmer : MonoBehaviour {
     }
     private void FieldManagement()
     {
+        if (_startedHarvesting || _startedPlanting)
+            return;
+
         if (_needplantPoint)
         {
             if (Options.autoPlantAfterHarvest)
@@ -254,33 +259,47 @@ public class Farmer : MonoBehaviour {
             _agent.SetDestination(_plantPoint.position);
             if (Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst) //is at destination
             {
+                _agent.SetDestination(_transform.position);
+
                 if (_plantPoint.crops == null)
                 {
-                    AnimTriggerPlant();
+                    stats = Stats.plant;
+                    _startedPlanting = true;
                     _needToPlant = true;
                     _crtPlantingCropsData = _field.cropsData;
-                    _plantTime = Time.time + _crtPlantingCropsData.plantTime;
+                    AnimTriggerPlant();
                 }
                 else
                 {
-                    AnimTriggerHarvest();
                     stats = Stats.harvest;
-                    _draggedCrops = _plantPoint.crops;
-                    _draggedCrops._transform.parent = _dragPosition;
-                    _draggedCrops._transform.position = _dragPosition.position;
-                    _draggedCrops._transform.rotation = Quaternion.identity;
-                    _plantPoint.crops = null;
-                    _plantPoint.targetted = false;
-                    _plantPoint = null;
-                    _needplantPoint = true;
-                    _agent.SetDestination(GameManager.inst.grenary.position);
+                    _startedHarvesting = true;
+                    AnimTriggerHarvest();
                 }
             }
         }
     }
+    private void Harvesting()
+    {
+        _draggedCrops = _plantPoint.crops;
+        _draggedCrops._transform.parent = _dragPosition;
+        _draggedCrops._transform.localPosition = Vector3.zero;
+        _draggedCrops._transform.localRotation = Quaternion.identity;
+        _plantPoint.crops = null;
+        _plantPoint.targetted = false;
+        _plantPoint = null;
+        _needplantPoint = true;
+    }
+    private void EndHarvest()
+    {
+        _startedHarvesting = false;
+        _agent.SetDestination(GameManager.inst.grenary.position);
+    }
+    public void Planting()
+    {
+        _plantTime = Time.time + _crtPlantingCropsData.plantTime;
+    }
     private void Plant()
     {
-        stats = Stats.plant;
         _field.InitPlant(_plantPoint, _crtPlantingCropsData);
         _plantPoint.targetted = false;
         _plantPoint = null;
@@ -297,6 +316,12 @@ public class Farmer : MonoBehaviour {
 
 
     #region AnimationFunction
+    private bool _startedHarvesting, _startedPlanting = false;
+
+    public void TriggerCarry()
+    {
+        _animator.SetTrigger("Carry");
+    }
     public void AnimTriggerStopCarry()
     {
         _animator.SetTrigger("StopCarry");
@@ -304,6 +329,10 @@ public class Farmer : MonoBehaviour {
     public void AnimTriggerPlant()
     {
         _animator.SetTrigger("Plant");
+    }
+    public void AnimTriggerEndPlant()
+    {
+        _animator.SetTrigger("EndPlant");
     }
     public void AnimTriggerHarvest()
     {
