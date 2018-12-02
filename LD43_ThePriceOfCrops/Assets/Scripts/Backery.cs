@@ -87,6 +87,7 @@ public class Backery : MonoBehaviour
                 }
                 else if (_time < Time.time)
                 {
+                    _time = -1;
                     _state = CookingState.bring;
                     if (_bringToGod = GameManager.inst.GetHarvestFoodDestination())
                         _destination = (GameManager.inst.sacrificePlace.position);
@@ -130,6 +131,13 @@ public class Backery : MonoBehaviour
     #region Functions
     internal void SetFarmer(Farmer farmer)
     {
+        if (_farmer != null)
+        {
+            if (farmer != null) return;
+            if (_state == CookingState.comeback || _state == CookingState.prepare || _state == CookingState.cook || _breadIngredient._transform.parent != _inside)
+                _breadIngredient._transform.parent = _inside;
+        }
+
         if (farmer == null)
             _farmer = null;
         else

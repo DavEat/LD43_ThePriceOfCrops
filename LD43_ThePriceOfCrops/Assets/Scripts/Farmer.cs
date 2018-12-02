@@ -175,11 +175,11 @@ public class Farmer : MonoBehaviour {
         }
         //else if (stats != Stats.idle)
         //    stats = Stats.idle;
-        else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Planting"))
+        /*else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Planting") && !_startedPlanting)
         {
             AnimTriggerEndPlant();
             Debug.Log("ForceKill : Planting");
-        }
+        }*/
         AnimSetSpeed(_agent.velocity.magnitude);
     }
     #endregion

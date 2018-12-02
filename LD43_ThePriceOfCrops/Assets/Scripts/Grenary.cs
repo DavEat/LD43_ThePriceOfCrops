@@ -75,7 +75,7 @@ public class Grenary : MonoBehaviour
     }
     public void GetCookingStuff()
     {
-        for (int i = 1; i < _foodStored.Length; i++) //only pumpkin and wheat
+        for (int i = 1; i < 3; i++) //only pumpkin and wheat
         {
             _foodStored[i].quantity--;
             _foodStored[i].reservedQuantity--;
