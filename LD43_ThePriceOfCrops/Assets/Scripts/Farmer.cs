@@ -14,7 +14,7 @@ public class Farmer : MonoBehaviour {
 
     private Field _field;
     private Field.PlantPoint _plantPoint;
-    private int _crtPLantPointIndex = -1;
+    private int _crtPlantPointIndex = -1;
     private bool _needplantPoint = true, _needToPlant = false;
     private float _plantTime = -1;
     private CropsData _crtPlantingCropsData;
@@ -179,7 +179,7 @@ public class Farmer : MonoBehaviour {
     public bool CanBeSelected()
     {
         bool canBeSelected = true;
-        if (_needToPlant || _draggedCrops != null || stats == Stats.goToEat || stats == Stats.goToHouse)
+        if (_needToPlant || _draggedCrops != null || stats == Stats.goToEat || stats == Stats.goToHouse || _startedHarvesting || _startedPlanting)
             canBeSelected = false;
         return canBeSelected;
     }
@@ -188,6 +188,7 @@ public class Farmer : MonoBehaviour {
         stats = Stats.idle;
         //_needToPlant = false;
         _field = null;
+        _crtPlantPointIndex = -1;
         if (_plantPoint != null)
         {
             _plantPoint.targetted = false;
@@ -250,6 +251,10 @@ public class Farmer : MonoBehaviour {
         stats = Stats.idle;
         _agent.SetDestination(GameManager.inst.villageCenter.position);
     }
+    public void GoInsideHouse(Vector3 position)
+    {
+        _agent.SetDestination(position);
+    }
     private void FieldManagement()
     {
         if (_startedHarvesting || _startedPlanting)
@@ -258,8 +263,8 @@ public class Farmer : MonoBehaviour {
         if (_needplantPoint)
         {
             if (Options.autoPlantAfterHarvest)
-                _plantPoint = _field.GetPlantPoint(_crtPLantPointIndex, Stats.idle);
-            else _plantPoint = _field.GetPlantPoint(_crtPLantPointIndex + 1, stats);
+                _plantPoint = _field.GetPlantPoint(_crtPlantPointIndex, Stats.idle);
+            else _plantPoint = _field.GetPlantPoint(_crtPlantPointIndex + 1, stats);
         }
         if (_plantPoint == null)
         {
@@ -267,13 +272,13 @@ public class Farmer : MonoBehaviour {
             //set destination to Village center
             _agent.SetDestination(GameManager.inst.villageCenter.position);
             stats = Stats.idle;
-            _crtPLantPointIndex = -1;
+            _crtPlantPointIndex = -1;
         }
         else
         {
             _plantPoint.targetted = true;
             _needplantPoint = false;
-            _crtPLantPointIndex = _plantPoint.index;
+            _crtPlantPointIndex = _plantPoint.index;
             _agent.SetDestination(_plantPoint.position);
             if (Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst) //is at destination
             {

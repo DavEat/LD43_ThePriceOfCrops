@@ -8,7 +8,7 @@ public class House : MonoBehaviour
 
     private Habitant[] _habitants = new Habitant[2];
 
-    public Transform door;
+    public Transform door, inside = null;
     #endregion
     #region Functions
     public bool AddFarmer(Farmer farmer)
@@ -32,6 +32,8 @@ public class House : MonoBehaviour
         //PlaceFarmer + Anim
         if (_habitants[0].inside && _habitants[1].inside)
         {
+            _habitants[0].farmer.GoInsideHouse(inside.position);
+            _habitants[1].farmer.GoInsideHouse(inside.position);
             StartCoroutine(ReproduceTimer());
         }
     }

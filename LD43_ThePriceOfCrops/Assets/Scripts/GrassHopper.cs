@@ -31,9 +31,9 @@ public class GrassHopper : MonoBehaviour
     {
         _transform.position = pos;
     }
-    public void ToggleEnable()
+    public void EndAnim()
     {
-        gameObject.SetActive(!gameObject.activeSelf);
+        gameObject.SetActive(false);
     }
     public void KillCrops()
     {

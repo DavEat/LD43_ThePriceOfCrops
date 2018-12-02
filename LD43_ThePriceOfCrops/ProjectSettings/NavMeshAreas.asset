@@ -16,17 +16,17 @@ NavMeshProjectSettings:
   - name: 
     cost: 1
   - name: Field
+    cost: 2
+  - name: Grass
     cost: 1.5
-  - name: 
+  - name: FoodPath
     cost: 1
   - name: 
     cost: 1
   - name: 
     cost: 1
-  - name: 
-    cost: 1
-  - name: 
-    cost: 1
+  - name: Center
+    cost: 4
   - name: 
     cost: 1
   - name: 
