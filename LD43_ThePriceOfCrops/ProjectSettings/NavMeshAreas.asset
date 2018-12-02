@@ -16,7 +16,7 @@ NavMeshProjectSettings:
   - name: 
     cost: 1
   - name: Field
-    cost: 2
+    cost: 1.5
   - name: 
     cost: 1
   - name: 

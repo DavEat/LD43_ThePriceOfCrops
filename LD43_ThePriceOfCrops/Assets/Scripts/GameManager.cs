@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
@@ -17,7 +18,11 @@ public class GameManager : MonoBehaviour {
     private Farmer _selectedFarmer;
     private Field _field;
 
-    public Transform villageCenter, grenary = null, sacrificePlace = null;
+    [SerializeField] private List<Farmer> _farmers = new List<Farmer>();
+
+    public Transform villageCenter, grenary = null, sacrificePlace = null, trash = null;
+
+    private bool _sendFoodToGod;
     #endregion
     #region MonoFunctions
     private void Awake()
@@ -48,11 +53,13 @@ public class GameManager : MonoBehaviour {
     #region Functions
     private void HitSelection(ref RaycastHit hit)
     {
-        if (_field != null && !hit.collider.CompareTag("Field"))
+        if (_field != null)
         {
             _field.ToggleInterface(false);
             _field = null;
         }
+        if (Sacrifice.inst.InterfaceDisplayed() && !hit.collider.CompareTag("Sacrifice"))
+            Sacrifice.inst.ShowInterface(false);
 
         //Debug.Log
         switch (hit.collider.tag)
@@ -87,6 +94,7 @@ public class GameManager : MonoBehaviour {
                     _selectedFarmer.SendToSacrifice();
                     _selectedFarmer = null;
                 }
+                else Sacrifice.inst.ShowInterface(true);
                 break;
             case "Grenary":
                 if (_selectedFarmer != null)
@@ -125,7 +133,31 @@ public class GameManager : MonoBehaviour {
     public Farmer InstatiateFarmer(Vector3 position, Quaternion rotation, Transform parent = null)
     {
         //if (parent == null) parent = transform.parent;
-        return Instantiate(_farmerPrefab, position, rotation, parent);
+        Farmer f = Instantiate(_farmerPrefab, position, rotation, parent);
+        _farmers.Add(f);
+        return f;
+    }
+    internal void RemoveFarmer(Farmer f)
+    {
+        _farmers.Remove(f);
+        if (_farmers.Count <= 0)
+        {
+            Debug.Log("GameOver");
+            Time.timeScale = 0;
+        }
+    }
+    internal void KillFirstFarmer()
+    {
+        _farmers[0].Kill();
+    }
+    public void ToggleSendFoodToGod()
+    {
+        _sendFoodToGod = !_sendFoodToGod;
+    }
+    internal bool GetHarvestFoodDestination()
+    {
+        return _sendFoodToGod;
     }
     #endregion
 }
+

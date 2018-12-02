@@ -51,11 +51,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5452ea9aa24988e49a74b81638b3ff36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _farmerPrefab: {fileID: 114790875131086124, guid: 7a776122192493644a1b2ccd776d5bad,
+  _farmerPrefab: {fileID: 114421780179639740, guid: a0c7fb03855f1ee45b0fcf5b46d9794c,
     type: 2}
   _layerMask:
     serializedVersion: 2
     m_Bits: 18941952
+  _farmers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   villageCenter: {fileID: 0}
   grenary: {fileID: 0}
   sacrificePlace: {fileID: 0}
+  trash: {fileID: 0}

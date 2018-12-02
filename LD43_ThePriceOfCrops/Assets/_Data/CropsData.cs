@@ -17,4 +17,5 @@ public class CropsData : ScriptableObject {
     public int food = 1;
 
     public Crops obj;
+    public Mesh damaged;
 }

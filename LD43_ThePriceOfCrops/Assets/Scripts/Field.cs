@@ -103,7 +103,7 @@ public class Field : MonoBehaviour {
 
         for (int i = 0; i < _plantPoints.Length; i++)
         {
-            if (!_plantPoints[i].targetted && _plantPoints[i].crops != null && _plantPoints[i].crops.CanBeHarvest() && _plantPoints[i].crops.GetFoodValue() > food)
+            if (!_plantPoints[i].targetted && _plantPoints[i].crops != null && _plantPoints[i].crops.eatable && _plantPoints[i].crops.CanBeHarvest() && _plantPoints[i].crops.GetFoodValue() > food)
             {
                 id = i;
                 food = _plantPoints[i].crops.GetFoodValue();
@@ -111,6 +111,38 @@ public class Field : MonoBehaviour {
         }
 
         return new int[] { id, food};
+    }
+    public int CountCorps()
+    {
+        int count = -1;
+
+        for (int i = 0; i < _plantPoints.Length; i++)
+            if (_plantPoints[i].crops != null && _plantPoints[i].crops.eatable)
+                count++;
+
+        return count;
+    }
+    public void Attaked()
+    {
+        SetTargettedAll(true);
+    }
+    public void EndAttaked()
+    {
+        SetTargettedAll(false);
+    }
+    private void SetTargettedAll(bool value)
+    {
+        for (int i = 0; i < _plantPoints.Length; i++)
+            _plantPoints[i].targetted = value;
+    }
+    public void CropsDamaged()
+    {
+        for (int i = 0; i < _plantPoints.Length; i++)
+        {
+            if (_plantPoints[i].crops != null)
+                _plantPoints[i].crops.CropsDamaged();
+            _plantPoints[i].targetted = true;
+        }
     }
     #endregion
     #endregion

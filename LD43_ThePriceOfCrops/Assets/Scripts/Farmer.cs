@@ -9,6 +9,9 @@ public class Farmer : MonoBehaviour {
     public Stats stats;
     private Stats _previousStats;
 
+    private Vector3 _targetPosition;
+    private bool _foodSendToSacrifice;
+
     private Field _field;
     private Field.PlantPoint _plantPoint;
     private int _crtPLantPointIndex = -1;
@@ -34,6 +37,7 @@ public class Farmer : MonoBehaviour {
     [SerializeField] private Animator _animator;
     private NavMeshAgent _agent;
     private Transform _transform;
+
     #endregion
     #region MonoFunctions
     private void Start ()
@@ -57,10 +61,15 @@ public class Farmer : MonoBehaviour {
         }
         else if (_draggedCrops != null) //waiting 
         {
-            if (Vector3.Distance(_transform.position, GameManager.inst.grenary.position) < _storeCropsDst) //is at destination
+            if (Vector3.Distance(_transform.position, _targetPosition) < _storeCropsDst) //is at destination
             {
                 AnimTriggerStopCarry();
-                Grenary.inst.AddFood(_draggedCrops);
+                if (_draggedCrops.eatable)
+                {
+                    if (_foodSendToSacrifice)
+                        Sacrifice.inst.
+                    else Grenary.inst.AddFood(_draggedCrops);
+                }
                 Destroy(_draggedCrops.gameObject);
                 _draggedCrops = null;
             }
@@ -126,8 +135,7 @@ public class Farmer : MonoBehaviour {
                     if (wannaEatTime < Time.time)
                     {
                         Debug.Log("No food found and die");
-                        this.enabled = false;
-                        Destroy(gameObject);
+
                     }
                     _eatAgain = false;
                     Debug.Log("No food found");
@@ -156,7 +164,11 @@ public class Farmer : MonoBehaviour {
         }
         //else if (stats != Stats.idle)
         //    stats = Stats.idle;
-
+        else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Planting"))
+        {
+            AnimTriggerEndPlant();
+            Debug.Log("ForceKill : Planting");
+        }
         AnimSetSpeed(_agent.velocity.magnitude);
     }
     #endregion
@@ -188,6 +200,9 @@ public class Farmer : MonoBehaviour {
         _field = null;
         if (_plantPoint != null)
             _plantPoint.targetted = false;
+
+        if (_agent == null)
+            _agent = GetComponent<NavMeshAgent>();
         _agent.SetDestination(dst);
     }
     public void SendToField(Field field)
@@ -281,9 +296,8 @@ public class Farmer : MonoBehaviour {
     private void Harvesting()
     {
         _draggedCrops = _plantPoint.crops;
-        _draggedCrops._transform.parent = _dragPosition;
-        _draggedCrops._transform.localPosition = Vector3.zero;
-        _draggedCrops._transform.localRotation = Quaternion.identity;
+
+        _plantPoint.crops.Drag(_dragPosition);
         _plantPoint.crops = null;
         _plantPoint.targetted = false;
         _plantPoint = null;
@@ -292,7 +306,14 @@ public class Farmer : MonoBehaviour {
     private void EndHarvest()
     {
         _startedHarvesting = false;
-        _agent.SetDestination(GameManager.inst.grenary.position);
+        if (_draggedCrops.eatable)
+        {
+            if (_foodSendToSacrifice = GameManager.inst.GetHarvestFoodDestination())
+                _targetPosition = GameManager.inst.sacrificePlace.position;
+            else _targetPosition = GameManager.inst.grenary.position;
+        }
+        else _targetPosition = GameManager.inst.trash.position;
+        _agent.SetDestination(_targetPosition);
     }
     public void Planting()
     {
@@ -312,9 +333,16 @@ public class Farmer : MonoBehaviour {
         if (stats == Stats.idle && move)
             _agent.SetDestination(GameManager.inst.villageCenter.position);
     }
+    public void Kill()
+    {
+        if (_plantPoint != null)
+            _plantPoint.targetted = false;
+
+        this.enabled = false;
+        GameManager.inst.RemoveFarmer(this);
+        Destroy(gameObject);
+    }
     #endregion
-
-
     #region AnimationFunction
     private bool _startedHarvesting, _startedPlanting = false;
 

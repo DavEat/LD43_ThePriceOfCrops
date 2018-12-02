@@ -54,6 +54,23 @@ public class FoodManager : MonoBehaviour {
         }
         return new int[] { -1, -1 };
     }
+    public Field GetMostFullField()
+    {
+        int count = 0;
+        int fieldId = -1;
+        for (int i = 0; i < _fields.Length; i++)
+        {
+            int c = _fields[i].CountCorps();
+            if (c > count)
+            {
+                count = c;
+                fieldId = i;
+            }
+        }
+        if (fieldId != -1)
+            return _fields[fieldId];
+        return null;
+    }
     public Field.PlantPoint GetFieldPlantPoint(int[] ids)
     {
         return _fields[ids[0]].GetPlantPointById(ids[1]);

@@ -44,12 +44,20 @@ public class House : MonoBehaviour
     {
         Debug.Log("Reproduce");
 
-        _habitants[0].farmer.LeaveHouse();
-        _habitants[0].Clear();
-        _habitants[1].farmer.LeaveHouse();
-        _habitants[1].Clear();
+        if (_habitants[0].farmer != null)
+        {
+            _habitants[0].farmer.LeaveHouse();
+            _habitants[0].Clear();
+        }
+        if(_habitants[1].farmer != null)
+        {
+            _habitants[1].farmer.LeaveHouse();
+            _habitants[1].Clear();
+        }
 
-        GameManager.inst.InstatiateFarmer(door.position, door.rotation);
+
+        Farmer f = GameManager.inst.InstatiateFarmer(door.position, door.rotation);
+        f.SetDestination(GameManager.inst.villageCenter.position);
     }
     #endregion
 
