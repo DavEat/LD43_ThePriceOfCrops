@@ -25,6 +25,7 @@ public class Backery : MonoBehaviour
 
     [SerializeField] private Crops _generateCropsPrefab;
     [SerializeField] private Crops _generateCrops;
+    [SerializeField] private Crops _breadIngredient;
     #endregion
     #region MonoFunctions
     private void Awake()
@@ -34,6 +35,7 @@ public class Backery : MonoBehaviour
     private void Start()
     {
         _generateCrops.Init(FoodManager.inst.GetCrops(3));
+        _breadIngredient.Init(FoodManager.inst.GetCrops(0));
     }
     private void Update()
     {
@@ -60,6 +62,8 @@ public class Backery : MonoBehaviour
                 Grenary.inst.GetCookingStuff();
                 _state = CookingState.comeback;
                 _farmer.OnlyMouseToPoint(_inside.position);
+
+                _farmer.DragObj(_breadIngredient);
                 _farmer.AnimTriggerCarry();
             }
         }
@@ -77,6 +81,7 @@ public class Backery : MonoBehaviour
             {
                 if (_time == -1)
                 {
+                    _breadIngredient.Drag(_inside);
                     _farmer.AnimTriggerStopCarry();
                     _time = Time.time + _cookTime;
                 }
@@ -104,7 +109,6 @@ public class Backery : MonoBehaviour
                 }
                 else Grenary.inst.AddFood(_generateCrops);
 
-                _farmer.ReleaseDraggedCrops();
                 _generateCrops.Drag(_inside);
 
                 _stuffReserved = Grenary.inst.FindCookingStuff();

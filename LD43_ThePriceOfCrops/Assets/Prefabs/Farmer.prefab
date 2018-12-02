@@ -713,7 +713,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c173be3124134b74cbe0778307d030fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: 0
+  state: 0
   wannaEatEachAtStart: 50
   _dragPosition: {fileID: 4160437386294628}
   maxEat: 180
@@ -750,5 +750,5 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 225
+  m_WalkableMask: 1249
   m_ObstacleAvoidanceType: 4

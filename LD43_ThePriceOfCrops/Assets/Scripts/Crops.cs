@@ -73,6 +73,10 @@ public class Crops : MonoBehaviour
         {
             _transform.GetChild(0).gameObject.SetActive(false);
         }
+        else if (_cropsData.name.ToLower().Equals("wheat"))
+        {
+            GetComponent<MeshFilter>().mesh = _cropsData.harvested;
+        }
     }
     #endregion
 }

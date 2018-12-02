@@ -142,10 +142,14 @@ public class Farmer : MonoBehaviour {
                     if (wannaEatTime < Time.time)
                     {
                         Debug.Log("No food found and die");
-
+                        Kill();
                     }
-                    _eatAgain = false;
-                    Debug.Log("No food found");
+                    else
+                    {
+                        _eatAgain = false;
+                        ResetPreviousStatsAfterEat(true);
+                        Debug.Log("No food found");
+                    }
                 }
                 else
                 {
@@ -361,10 +365,6 @@ public class Farmer : MonoBehaviour {
     public void DragObj(Crops c)
     {
         c.Drag(_dragPosition);
-    }
-    public void ReleaseDraggedCrops()
-    {
-        _draggedCrops = null;
     }
     #endregion
     #region AnimationFunction

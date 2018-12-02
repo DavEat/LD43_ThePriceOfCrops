@@ -17,4 +17,5 @@ MonoBehaviour:
   growTime: 15
   food: 15
   obj: {fileID: 114916038476591620, guid: 759c76aef2674834fbdf723fe40257d4, type: 2}
-  damaged: {fileID: 0}
+  damaged: {fileID: 4300000, guid: 8ffa237630941d040a5b1249b71d9d6c, type: 3}
+  harvested: {fileID: 4300000, guid: c2dda567f5c32ea4ebc45703f7d3885e, type: 3}

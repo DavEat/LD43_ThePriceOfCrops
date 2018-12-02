@@ -18,4 +18,5 @@ public class CropsData : ScriptableObject {
 
     public Crops obj;
     public Mesh damaged;
+    public Mesh harvested;
 }
