@@ -20,7 +20,7 @@ public class Farmer : MonoBehaviour {
     private CropsData _crtPlantingCropsData;
 
     private const float _harvestDst = 1.1f;
-    private const float _storeCropsDst = 1.2f;
+    private const float _storeCropsDst = 1.5f;
 
     private Crops _draggedCrops = null;
 
@@ -52,7 +52,7 @@ public class Farmer : MonoBehaviour {
     {
         if (_needToPlant) //waiting 
         {
-            if (_plantTime < Time.time)
+            if (_plantTime > 0 && _plantTime < Time.time)
             {
                 Plant();
                 _startedPlanting = false;
@@ -67,7 +67,10 @@ public class Farmer : MonoBehaviour {
                 if (_draggedCrops.eatable)
                 {
                     if (_foodSendToSacrifice)
-                        Sacrifice.inst.
+                    {
+                        _agent.SetDestination(_transform.position);
+                        Sacrifice.inst.SacrificeFood(_draggedCrops);
+                    }
                     else Grenary.inst.AddFood(_draggedCrops);
                 }
                 Destroy(_draggedCrops.gameObject);
@@ -103,7 +106,7 @@ public class Farmer : MonoBehaviour {
                 }
                 else
                 {
-                    if (Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst)
+                    if (_plantPoint != null && Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst)
                     {
                         //Add Anim eat + sound
                         _eatAgain = wannaEatTime < Time.time;
@@ -281,6 +284,7 @@ public class Farmer : MonoBehaviour {
                     stats = Stats.plant;
                     _startedPlanting = true;
                     _needToPlant = true;
+                    _plantTime = -1;
                     _crtPlantingCropsData = _field.cropsData;
                     AnimTriggerPlant();
                 }
