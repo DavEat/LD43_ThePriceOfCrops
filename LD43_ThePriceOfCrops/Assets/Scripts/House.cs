@@ -32,8 +32,8 @@ public class House : MonoBehaviour
         //PlaceFarmer + Anim
         if (_habitants[0].inside && _habitants[1].inside)
         {
-            _habitants[0].farmer.GoInsideHouse(inside.position);
-            _habitants[1].farmer.GoInsideHouse(inside.position);
+            _habitants[0].farmer.OnlyMouseToPoint(inside.position);
+            _habitants[1].farmer.OnlyMouseToPoint(inside.position);
             StartCoroutine(ReproduceTimer());
         }
     }

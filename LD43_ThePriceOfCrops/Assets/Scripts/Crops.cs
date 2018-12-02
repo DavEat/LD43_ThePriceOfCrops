@@ -9,6 +9,8 @@ public class Crops : MonoBehaviour
     [HideInInspector] public bool eatable = true;
 
     public Transform _transform { get; private set; }
+
+    public bool needToGrow = true;
     #endregion
     #region MonoFunctions
     private void Start()
@@ -17,7 +19,7 @@ public class Crops : MonoBehaviour
     }
     private void Update()
     {
-        if (eatable)
+        if (eatable && needToGrow)
             Grow();
     }
     #endregion

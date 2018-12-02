@@ -22,11 +22,11 @@ GameObject:
   - component: {fileID: 198977693461097522}
   - component: {fileID: 199953206385802822}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: ParticleSystem_fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &1425920912406712
 GameObject:
@@ -39,11 +39,11 @@ GameObject:
   - component: {fileID: 198807291432307200}
   - component: {fileID: 199771625363183052}
   m_Layer: 0
-  m_Name: Particle System (1)
+  m_Name: ParticleSystem_smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!1 &1761252368235742
 GameObject:
@@ -55,12 +55,13 @@ GameObject:
   - component: {fileID: 4469513436443068}
   - component: {fileID: 33771233583840298}
   - component: {fileID: 23463611863284234}
-  m_Layer: 0
+  - component: {fileID: 65268335514197546}
+  m_Layer: 24
   m_Name: oven
-  m_TagString: Untagged
+  m_TagString: Backery
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_NavMeshLayer: 1
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &4469513436443068
 Transform:
@@ -145,6 +146,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1761252368235742}
   m_Mesh: {fileID: 4300000, guid: 1ca9a22063d9fc545a045b7c7afbaf89, type: 3}
+--- !u!65 &65268335514197546
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1761252368235742}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.1000009, y: 4.4500003, z: 3.2000008}
+  m_Center: {x: 0, y: 2.2250001, z: 0}
 --- !u!198 &198807291432307200
 ParticleSystem:
   m_ObjectHideFlags: 1

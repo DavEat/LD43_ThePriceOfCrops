@@ -111,6 +111,13 @@ public class GameManager : MonoBehaviour {
                     _selectedFarmer = null;
                 }
                 break;
+            case "Backery":
+                if (_selectedFarmer != null)
+                {                    
+                    Backery.inst.SetFarmer(_selectedFarmer);
+                    _selectedFarmer = null;
+                }
+                break;
             default:
                 Debug.LogErrorFormat("No tag found for this collider : {0}", hit.collider.name);
                 break;

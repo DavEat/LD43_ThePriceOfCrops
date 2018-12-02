@@ -7,7 +7,7 @@ public class Grenary : MonoBehaviour
     public static Grenary inst;
 
     #region Vars
-    private StoredFood[] _foodStored = new StoredFood[3];
+    private StoredFood[] _foodStored = new StoredFood[4];
     #endregion
     #region MonoFunctions
     private void Awake()
@@ -56,6 +56,30 @@ public class Grenary : MonoBehaviour
         _foodStored[id].reservedQuantity--;
 
         return _foodStored[id].foodValueByPart;
+    }
+    public bool FindCookingStuff()
+    {
+        bool v = true;
+        for (int i = 1; i < 3; i++) //only pumpkin and wheat
+        {
+            if (_foodStored[i].quantity <= 0 ||  _foodStored[i].reservedQuantity >= _foodStored[i].quantity)
+                v = false;
+        }
+
+        if (v)
+        {
+            for (int i = 1; i < 3; i++) //only pumpkin and wheat
+                _foodStored[i].reservedQuantity++;
+        }
+        return v;
+    }
+    public void GetCookingStuff()
+    {
+        for (int i = 1; i < _foodStored.Length; i++) //only pumpkin and wheat
+        {
+            _foodStored[i].quantity--;
+            _foodStored[i].reservedQuantity--;
+        }
     }
     #endregion
 

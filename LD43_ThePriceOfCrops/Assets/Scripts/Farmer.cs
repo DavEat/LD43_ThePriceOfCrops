@@ -3,10 +3,10 @@ using UnityEngine.AI;
 
 public class Farmer : MonoBehaviour {
 
-    public enum Stats { idle, move, plant, harvest, sacrifice, goToEat, goToHouse }
+    public enum Stats { idle, move, plant, harvest, sacrifice, goToEat, goToHouse, isBacker }
 
     #region Vars
-    public Stats stats;
+    public Stats state;
     private Stats _previousStats;
 
     private Vector3 _targetPosition;
@@ -25,7 +25,7 @@ public class Farmer : MonoBehaviour {
     private Crops _draggedCrops = null;
 
     [SerializeField] private int wannaEatEachAtStart = 50; // in sec
-    private float wannaEatTime;
+    internal float wannaEatTime;
     private int[] _wannaEatTargetIds;
     private bool _eatAgain = false;
 
@@ -50,7 +50,11 @@ public class Farmer : MonoBehaviour {
 	
 	private void Update ()
     {
-        if (_needToPlant) //waiting 
+        if (state == Stats.isBacker)
+        {
+
+        }
+        else if (_needToPlant) //waiting 
         {
             if (_plantTime > 0 && _plantTime < Time.time)
             {
@@ -77,7 +81,7 @@ public class Farmer : MonoBehaviour {
                 _draggedCrops = null;
             }
         }
-        else if (stats == Stats.goToHouse)
+        else if (state == Stats.goToHouse)
         {
             if (_targettedHouse != null && Vector3.Distance(_transform.position, _targettedHouse.door.position) < _storeCropsDst)
             {
@@ -87,7 +91,7 @@ public class Farmer : MonoBehaviour {
         }
         else if (wannaEatTime < Time.time || _eatAgain)
         {
-            if (stats == Stats.goToEat)
+            if (state == Stats.goToEat)
             {
                 if (_wannaEatTargetIds[0] == -1)
                 {
@@ -145,8 +149,8 @@ public class Farmer : MonoBehaviour {
                 }
                 else
                 {
-                    _previousStats = stats;
-                    stats = Stats.goToEat;
+                    _previousStats = state;
+                    state = Stats.goToEat;
                     if (_wannaEatTargetIds[0] == -1) //grenary
                         _agent.SetDestination(GameManager.inst.grenary.position);
                     else //field
@@ -160,7 +164,7 @@ public class Farmer : MonoBehaviour {
         }
         else if (_field != null)
             FieldManagement();
-        else if (stats == Stats.sacrifice)
+        else if (state == Stats.sacrifice)
         {
             if (Vector3.Distance(_transform.position, GameManager.inst.sacrificePlace.position) < _storeCropsDst) //is at destination
                 Sacrifice.inst.SacrificeFarmer(this);
@@ -179,13 +183,16 @@ public class Farmer : MonoBehaviour {
     public bool CanBeSelected()
     {
         bool canBeSelected = true;
-        if (_needToPlant || _draggedCrops != null || stats == Stats.goToEat || stats == Stats.goToHouse || _startedHarvesting || _startedPlanting)
+        if (_needToPlant || _draggedCrops != null || state == Stats.goToEat || state == Stats.goToHouse || _startedHarvesting || _startedPlanting)
             canBeSelected = false;
         return canBeSelected;
     }
     public void Selected()
     {
-        stats = Stats.idle;
+        if (state == Stats.isBacker)
+            Backery.inst.SetFarmer(null);
+
+        state = Stats.idle;
         //_needToPlant = false;
         _field = null;
         _crtPlantPointIndex = -1;
@@ -200,7 +207,7 @@ public class Farmer : MonoBehaviour {
     {
         if (_needToPlant) return;
 
-        stats = Stats.move;
+        state = Stats.move;
         _field = null;
         if (_plantPoint != null)
             _plantPoint.targetted = false;
@@ -221,7 +228,7 @@ public class Farmer : MonoBehaviour {
     }
     public void SendToSacrifice()
     {
-        stats = Stats.sacrifice;
+        state = Stats.sacrifice;
         _needToPlant = false;
         _field = null;
         if (_plantPoint != null)
@@ -236,7 +243,7 @@ public class Farmer : MonoBehaviour {
     }
     public void SendToHouse(House house)
     {
-        stats = Stats.goToHouse;
+        state = Stats.goToHouse;
         _needToPlant = false;
         _field = null;
         if (_plantPoint != null)
@@ -248,10 +255,10 @@ public class Farmer : MonoBehaviour {
     public void LeaveHouse()
     {
         //_targettedHouse = null;
-        stats = Stats.idle;
+        state = Stats.idle;
         _agent.SetDestination(GameManager.inst.villageCenter.position);
     }
-    public void GoInsideHouse(Vector3 position)
+    public void OnlyMouseToPoint(Vector3 position)
     {
         _agent.SetDestination(position);
     }
@@ -264,14 +271,14 @@ public class Farmer : MonoBehaviour {
         {
             if (Options.autoPlantAfterHarvest)
                 _plantPoint = _field.GetPlantPoint(_crtPlantPointIndex, Stats.idle);
-            else _plantPoint = _field.GetPlantPoint(_crtPlantPointIndex + 1, stats);
+            else _plantPoint = _field.GetPlantPoint(_crtPlantPointIndex + 1, state);
         }
         if (_plantPoint == null)
         {
             _field = null;
             //set destination to Village center
             _agent.SetDestination(GameManager.inst.villageCenter.position);
-            stats = Stats.idle;
+            state = Stats.idle;
             _crtPlantPointIndex = -1;
         }
         else
@@ -286,7 +293,7 @@ public class Farmer : MonoBehaviour {
 
                 if (_plantPoint.crops == null)
                 {
-                    stats = Stats.plant;
+                    state = Stats.plant;
                     _startedPlanting = true;
                     _needToPlant = true;
                     _plantTime = -1;
@@ -295,7 +302,7 @@ public class Farmer : MonoBehaviour {
                 }
                 else
                 {
-                    stats = Stats.harvest;
+                    state = Stats.harvest;
                     _startedHarvesting = true;
                     AnimTriggerHarvest();
                 }
@@ -338,8 +345,8 @@ public class Farmer : MonoBehaviour {
     }
     private void ResetPreviousStatsAfterEat(bool move)
     {
-        stats = _previousStats;
-        if (stats == Stats.idle && move)
+        state = _previousStats;
+        if (state == Stats.idle && move)
             _agent.SetDestination(GameManager.inst.villageCenter.position);
     }
     public void Kill()
@@ -351,11 +358,19 @@ public class Farmer : MonoBehaviour {
         GameManager.inst.RemoveFarmer(this);
         Destroy(gameObject);
     }
+    public void DragObj(Crops c)
+    {
+        c.Drag(_dragPosition);
+    }
+    public void ReleaseDraggedCrops()
+    {
+        _draggedCrops = null;
+    }
     #endregion
     #region AnimationFunction
     private bool _startedHarvesting, _startedPlanting = false;
 
-    public void TriggerCarry()
+    public void AnimTriggerCarry()
     {
         _animator.SetTrigger("Carry");
     }

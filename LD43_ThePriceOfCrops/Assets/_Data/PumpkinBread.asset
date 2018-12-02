@@ -9,12 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 999ebc1031b1d5c45aa348b1d816bd5f, type: 3}
-  m_Name: Wheat
+  m_Name: PumpkinBread
   m_EditorClassIdentifier: 
-  id: 2
-  name: Wheat
-  plantTime: 3
-  growTime: 15
-  food: 15
-  obj: {fileID: 114916038476591620, guid: 759c76aef2674834fbdf723fe40257d4, type: 2}
+  id: 3
+  name: PumpkinBread
+  plantTime: 5
+  growTime: 5
+  food: 130
+  obj: {fileID: 114114986076374434, guid: ea16c3cce5dec0e4280566568f9409b9, type: 2}
   damaged: {fileID: 0}
