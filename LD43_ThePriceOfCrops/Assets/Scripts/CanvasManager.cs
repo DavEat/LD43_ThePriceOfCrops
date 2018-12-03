@@ -5,7 +5,7 @@ public class CanvasManager : MonoBehaviour {
 
     public static CanvasManager inst;
 
-    public GameObject menu;
+    public GameObject menu, menuButton;
 
     private bool _startedGame;
 
@@ -19,12 +19,8 @@ public class CanvasManager : MonoBehaviour {
     }
     private void Update ()
     {
-		if (Input.GetKeyDown(KeyCode.Escape) && _startedGame)
-        {
-            menu.transform.parent.gameObject.SetActive(!menu.transform.parent.gameObject.activeSelf);
-            menu.SetActive(menu.transform.parent.gameObject);
-            GameManager.timeScale = menu.activeSelf ? 0 : 1;
-        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Escape();
 	}
     public void StartGame()
     {
@@ -38,5 +34,15 @@ public class CanvasManager : MonoBehaviour {
     public void Quit()
     {
         Application.Quit();
+    }
+    public void Escape()
+    {
+        if (_startedGame)
+        {
+            menu.transform.parent.gameObject.SetActive(!menu.transform.parent.gameObject.activeSelf);
+            menu.SetActive(menu.transform.parent.gameObject);
+            GameManager.timeScale = menu.activeSelf ? 0 : 1;
+            menuButton.SetActive(!menu.activeSelf);
+        }
     }
 }
