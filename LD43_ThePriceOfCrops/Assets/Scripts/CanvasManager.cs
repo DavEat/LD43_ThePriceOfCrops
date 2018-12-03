@@ -16,10 +16,11 @@ public class CanvasManager : MonoBehaviour {
     private void Start()
     {
         GameManager.timeScale = 0;
+        Debug.Log(GameManager.timeScale);
     }
     private void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && menuButton.activeSelf)
             Escape();
 	}
     public void StartGame()

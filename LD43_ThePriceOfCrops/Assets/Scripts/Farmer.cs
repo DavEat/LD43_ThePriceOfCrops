@@ -38,6 +38,8 @@ public class Farmer : MonoBehaviour {
     private NavMeshAgent _agent;
     private Transform _transform;
 
+
+    public GameObject selected;
     #endregion
     #region MonoFunctions
     private void Start ()
@@ -196,6 +198,7 @@ public class Farmer : MonoBehaviour {
         if (state == Stats.isBacker)
             Backery.inst.SetFarmer(null);
 
+        selected.SetActive(true);
         state = Stats.idle;
         //_needToPlant = false;
         _field = null;

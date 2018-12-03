@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour {
                 if (_selectedFarmer != null)
                 {
                     _selectedFarmer.SendToField(f);
+                    _selectedFarmer.selected.SetActive(false);
                     _selectedFarmer = null;
                 }
                 else
@@ -100,6 +101,7 @@ public class GameManager : MonoBehaviour {
                 if (_selectedFarmer != null)
                 {
                     _selectedFarmer.SendToSacrifice();
+                    _selectedFarmer.selected.SetActive(false);
                     _selectedFarmer = null;
                 }
                 else Sacrifice.inst.ShowInterface(true);
@@ -108,6 +110,7 @@ public class GameManager : MonoBehaviour {
                 if (_selectedFarmer != null)
                 {
                     _selectedFarmer.SendToEat();
+                    _selectedFarmer.selected.SetActive(false);
                     _selectedFarmer = null;
                 }
                 break;
@@ -116,6 +119,7 @@ public class GameManager : MonoBehaviour {
                 {
                     House h = hit.collider.GetComponent<House>();
                     h.AddFarmer(_selectedFarmer);
+                    _selectedFarmer.selected.SetActive(false);
                     _selectedFarmer = null;
                 }
                 break;
@@ -123,6 +127,7 @@ public class GameManager : MonoBehaviour {
                 if (_selectedFarmer != null)
                 {                    
                     Backery.inst.SetFarmer(_selectedFarmer);
+                    _selectedFarmer.selected.SetActive(false);
                     _selectedFarmer = null;
                 }
                 break;
@@ -143,7 +148,10 @@ public class GameManager : MonoBehaviour {
     {
         _selectedFarmer.SetDestination(to);
         if (Options.unselectFarmerOnDestination)
+        {
+            _selectedFarmer.selected.SetActive(false);
             _selectedFarmer = null;
+        }
     }
     public Farmer InstatiateFarmer(Vector3 position, Quaternion rotation, Transform parent = null)
     {

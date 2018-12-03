@@ -8,7 +8,7 @@ public class Wheat : Crops {
 
     protected override void Grow()
     {
-        _startVector.y = Mathf.Lerp(.1f, 1, Mathf.Min(GameManager.time / growEnd, 1));
+        _startVector.y = Mathf.Lerp(.1f, 1, 1 - Mathf.Min((growEnd - GameManager.time) / _cropsData.growTime, 1));
         _transform.localScale = _startVector;
     }
 }

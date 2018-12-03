@@ -48,6 +48,8 @@ public class Sacrifice : MonoBehaviour
     {
         while (true)
         {
+            if (GameManager.timeScale == 0)
+                yield return null;
             yield return new WaitForSeconds(1);
             crtGodsHappiness -= happinessDecreaseBySec;
 
