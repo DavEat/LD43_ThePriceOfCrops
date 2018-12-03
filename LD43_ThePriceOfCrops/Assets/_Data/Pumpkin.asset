@@ -14,7 +14,8 @@ MonoBehaviour:
   id: 1
   name: Pumpkin
   plantTime: 2
-  growTime: 5
+  growTime: 8
   food: 25
   obj: {fileID: 114578762556077556, guid: 2fe4175628981f44395628f709452545, type: 2}
   damaged: {fileID: 4300000, guid: 3011c2e815ff9f649b6a7304bc66d08a, type: 3}
+  harvested: {fileID: 0}

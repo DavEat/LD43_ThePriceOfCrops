@@ -45,7 +45,7 @@ public class Farmer : MonoBehaviour {
         _agent = GetComponent<NavMeshAgent>();
         _transform = GetComponent<Transform>();
 
-        wannaEatTime = Time.time + wannaEatEachAtStart;
+        wannaEatTime = GameManager.time + wannaEatEachAtStart;
     }
 	
 	private void Update ()
@@ -56,7 +56,7 @@ public class Farmer : MonoBehaviour {
         }
         else if (_needToPlant) //waiting 
         {
-            if (_plantTime > 0 && _plantTime < Time.time)
+            if (_plantTime > 0 && _plantTime < GameManager.time)
             {
                 Plant();
                 _startedPlanting = false;
@@ -89,7 +89,7 @@ public class Farmer : MonoBehaviour {
                 _targettedHouse = null;
             }
         }
-        else if (wannaEatTime < Time.time || _eatAgain)
+        else if (wannaEatTime < GameManager.time || _eatAgain)
         {
             if (state == Stats.goToEat)
             {
@@ -99,11 +99,11 @@ public class Farmer : MonoBehaviour {
                     {
                         //Add Anim eat + sound
 
-                        _eatAgain = wannaEatTime < Time.time;
+                        _eatAgain = wannaEatTime < GameManager.time;
                         int foodNutrition = Grenary.inst.GetClaimedFood(_wannaEatTargetIds[1]);
-                        if (wannaEatTime - Time.time < 0)
+                        if (wannaEatTime - GameManager.time < 0)
                             wannaEatTime = 0;
-                        wannaEatTime += Time.time + foodNutrition;
+                        wannaEatTime += GameManager.time + foodNutrition;
 
                         ResetPreviousStatsAfterEat(!_eatAgain);
                     }
@@ -113,12 +113,12 @@ public class Farmer : MonoBehaviour {
                     if (_plantPoint != null && Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst)
                     {
                         //Add Anim eat + sound
-                        _eatAgain = wannaEatTime < Time.time;
+                        _eatAgain = wannaEatTime < GameManager.time;
                         int foodNutrition = _plantPoint.crops.GetFoodValue();
 
-                        if (wannaEatTime - Time.time < 0)
+                        if (wannaEatTime - GameManager.time < 0)
                             wannaEatTime = 0;
-                        wannaEatTime += Time.time + foodNutrition;
+                        wannaEatTime += GameManager.time + foodNutrition;
 
                         Destroy(_plantPoint.crops.gameObject);
                         _plantPoint.crops = null;
@@ -139,7 +139,7 @@ public class Farmer : MonoBehaviour {
                 _wannaEatTargetIds = FoodManager.inst.FindFood();
                 if (_wannaEatTargetIds[0] == -1 && _wannaEatTargetIds[1] == -1)
                 {
-                    if (wannaEatTime < Time.time)
+                    if (wannaEatTime < GameManager.time)
                     {
                         Debug.Log("No food found and die");
                         Kill();
@@ -241,7 +241,7 @@ public class Farmer : MonoBehaviour {
     }
     public void SendToEat()
     {
-        if (wannaEatTime - Time.time < maxEat)
+        if (wannaEatTime - GameManager.time < maxEat)
             _eatAgain = true;
         else Debug.Log("eat to mush already");
     }
@@ -337,7 +337,7 @@ public class Farmer : MonoBehaviour {
     }
     public void Planting()
     {
-        _plantTime = Time.time + _crtPlantingCropsData.plantTime;
+        _plantTime = GameManager.time + _crtPlantingCropsData.plantTime;
     }
     private void Plant()
     {

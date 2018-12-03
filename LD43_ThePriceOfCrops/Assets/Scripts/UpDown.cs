@@ -16,7 +16,7 @@ public class UpDown : MonoBehaviour {
 	
 	private void Update ()
     {
-        float y = _startYPos + Mathf.Sin(Time.time) * Time.deltaTime * intencity;
+        float y = _startYPos + Mathf.Sin(GameManager.time) * GameManager.deltaTime * intencity;
         _transform.localPosition = new Vector3(_transform.localPosition.x, y, _transform.localPosition.z);
     }
 }

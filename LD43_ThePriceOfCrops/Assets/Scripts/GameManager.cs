@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour {
     public Transform villageCenter, grenary = null, sacrificePlace = null, trash = null;
 
     private bool _sendFoodToGod;
+
+    public static float deltaTime, time, timeScale = 1;
     #endregion
     #region MonoFunctions
     private void Awake()
@@ -35,6 +37,12 @@ public class GameManager : MonoBehaviour {
     }
 	private void Update ()
     {
+        deltaTime = Time.deltaTime * timeScale;
+        time += deltaTime;
+
+        if (timeScale <= 0)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         //    _mouseDownPos = Input.mousePosition;
         //if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 1.5f)
@@ -150,11 +158,14 @@ public class GameManager : MonoBehaviour {
         if (_farmers.Count <= 0)
         {
             Debug.Log("GameOver");
-            Time.timeScale = 0;
+            GameManager.timeScale = 0;
+            CanvasManager.inst.Reload();
         }
     }
     internal void KillFirstFarmer()
     {
+        _farmers[0].Selected();
+        Lighting.inst.Hit(_farmers[0].transform.position);
         _farmers[0].Kill();
     }
     public void ToggleSendFoodToGod()

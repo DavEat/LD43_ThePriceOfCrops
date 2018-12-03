@@ -83,9 +83,9 @@ public class Backery : MonoBehaviour
                 {
                     _breadIngredient.Drag(_inside);
                     _farmer.AnimTriggerStopCarry();
-                    _time = Time.time + _cookTime;
+                    _time = GameManager.time + _cookTime;
                 }
-                else if (_time < Time.time)
+                else if (_time < GameManager.time)
                 {
                     _time = -1;
                     _state = CookingState.bring;

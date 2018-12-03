@@ -28,11 +28,11 @@ public class Crops : MonoBehaviour
     {
         _cropsData = data;
 
-        growEnd = Time.time + _cropsData.growTime;
+        growEnd = GameManager.time + _cropsData.growTime;
     }
     public bool CanBeHarvest()
     {
-        return growEnd < Time.time;
+        return growEnd < GameManager.time;
     }
     public Crops Harvest()
     {
@@ -40,7 +40,7 @@ public class Crops : MonoBehaviour
     }
     protected virtual void Grow()
     {
-        _transform.localScale = Vector3.one * Mathf.Lerp(.1f, 1, 1 - Mathf.Min((growEnd - Time.time) / _cropsData.growTime, 1));
+        _transform.localScale = Vector3.one * Mathf.Lerp(.1f, 1, 1 - Mathf.Min((growEnd - GameManager.time) / _cropsData.growTime, 1));
     }
     public int GetFoodValue()
     {
