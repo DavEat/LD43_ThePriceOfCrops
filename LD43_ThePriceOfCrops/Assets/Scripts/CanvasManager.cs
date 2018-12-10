@@ -16,7 +16,6 @@ public class CanvasManager : MonoBehaviour {
     private void Start()
     {
         GameManager.timeScale = 0;
-        Debug.Log(GameManager.timeScale);
     }
     private void Update ()
     {

@@ -17,7 +17,7 @@ public class Backery : MonoBehaviour
     private float _interactDst = 1.2f;
     private bool _stuffReserved;
 
-    private float _prepareTime = 5f, _cookTime = 5f;
+    private float /*_prepareTime = 5f,*/ _cookTime = 5f;
     private float _time = -1;
 
     private bool _bringToGod = false;

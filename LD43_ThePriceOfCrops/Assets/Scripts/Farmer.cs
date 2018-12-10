@@ -38,8 +38,8 @@ public class Farmer : MonoBehaviour {
     private NavMeshAgent _agent;
     private Transform _transform;
 
-
     public GameObject selected;
+    [SerializeField] private StateIcon _stateIcon; 
     #endregion
     #region MonoFunctions
     private void Start ()
@@ -107,6 +107,7 @@ public class Farmer : MonoBehaviour {
                         wannaEatTime += GameManager.time + foodNutrition;
 
                         ResetPreviousStatsAfterEat(!_eatAgain);
+                        _stateIcon.UpdateState(StateIcon.States.none);
                     }
                 }
                 else
@@ -129,6 +130,8 @@ public class Farmer : MonoBehaviour {
                         //_crtPLantPointIndex = -1;
 
                         ResetPreviousStatsAfterEat(!_eatAgain);
+
+                        _stateIcon.UpdateState(StateIcon.States.none);
                     }
                 }
                 
@@ -136,6 +139,12 @@ public class Farmer : MonoBehaviour {
             }
             else
             {
+                if (_plantPoint != null)
+                {
+                    _plantPoint.targetted = false;
+                    _plantPoint = null;
+                }
+
                 //Find nearestFood and better to eat
                 _wannaEatTargetIds = FoodManager.inst.FindFood();
                 if (_wannaEatTargetIds[0] == -1 && _wannaEatTargetIds[1] == -1)
@@ -154,6 +163,8 @@ public class Farmer : MonoBehaviour {
                 }
                 else
                 {
+                    _stateIcon.UpdateState(StateIcon.States.eat);
+
                     _previousStats = state;
                     state = Stats.goToEat;
                     if (_wannaEatTargetIds[0] == -1) //grenary
@@ -209,6 +220,8 @@ public class Farmer : MonoBehaviour {
             _plantPoint = null;
         }
         _agent.SetDestination(_transform.position);
+
+        _stateIcon.UpdateState(StateIcon.States.none);
     }
     public void SetDestination(Vector3 dst)
     {
@@ -241,6 +254,8 @@ public class Farmer : MonoBehaviour {
         if (_plantPoint != null)
             _plantPoint.targetted = false;
         _agent.SetDestination(GameManager.inst.sacrificePlace.position);
+
+        _stateIcon.UpdateState(StateIcon.States.sacrifice);
     }
     public void SendToEat()
     {
@@ -258,12 +273,16 @@ public class Farmer : MonoBehaviour {
 
         _targettedHouse = house;
         _agent.SetDestination(house.door.position);
+
+        _stateIcon.UpdateState(StateIcon.States.reproduction);
     }
     public void LeaveHouse()
     {
         //_targettedHouse = null;
         state = Stats.idle;
         _agent.SetDestination(GameManager.inst.villageCenter.position);
+
+        _stateIcon.UpdateState(StateIcon.States.none);
     }
     public void OnlyMouseToPoint(Vector3 position)
     {
@@ -294,6 +313,13 @@ public class Farmer : MonoBehaviour {
             _needplantPoint = false;
             _crtPlantPointIndex = _plantPoint.index;
             _agent.SetDestination(_plantPoint.position);
+
+            if (_plantPoint.crops == null)
+                _stateIcon.UpdateState(StateIcon.States.plant);
+            else if (_plantPoint.crops.eatable)
+                _stateIcon.UpdateState(StateIcon.States.storing);
+            else _stateIcon.UpdateState(StateIcon.States.trash);
+
             if (Vector3.Distance(_transform.position, _plantPoint.position) < _harvestDst) //is at destination
             {
                 _agent.SetDestination(_transform.position);
@@ -337,6 +363,8 @@ public class Farmer : MonoBehaviour {
         }
         else _targetPosition = GameManager.inst.trash.position;
         _agent.SetDestination(_targetPosition);
+
+        _stateIcon.UpdateState(StateIcon.States.none);
     }
     public void Planting()
     {
