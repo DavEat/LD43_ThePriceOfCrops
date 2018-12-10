@@ -56,7 +56,7 @@ public class Crops : MonoBehaviour
         if (_cropsData.damaged != null)
         {
             GetComponent<MeshFilter>().mesh = _cropsData.damaged;
-            if (_cropsData.name.ToLower().Equals("pumpkin"))
+            if (_cropsData.Name.ToLower().Equals("pumpkin"))
             {
                 _transform.localEulerAngles = Vector3.up * Random.Range(0, 360);
                 _transform.GetChild(0).gameObject.SetActive(false);
@@ -69,11 +69,11 @@ public class Crops : MonoBehaviour
         _transform.localPosition = Vector3.zero;
         _transform.localRotation = Quaternion.identity;
 
-        if (_cropsData.name.ToLower().Equals("pumpkin"))
+        if (_cropsData.Name.ToLower().Equals("pumpkin"))
         {
             _transform.GetChild(0).gameObject.SetActive(false);
         }
-        else if (_cropsData.name.ToLower().Equals("wheat"))
+        else if (_cropsData.Name.ToLower().Equals("wheat"))
         {
             GetComponent<MeshFilter>().mesh = _cropsData.harvested;
         }

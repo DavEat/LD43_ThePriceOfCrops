@@ -23,14 +23,14 @@ public class Grenary : MonoBehaviour
 
         for (int i = 0; i < crops.Length; i++)
         {
-            _foodStored[i] = new StoredFood(crops[i].id, crops[i].name, crops[i].food);
+            _foodStored[i] = new StoredFood(crops[i].id, crops[i].Name, crops[i].food);
         }
     }
     private void Update()
     {
         nPumpkin.text = "" + Mathf.Max(_foodStored[1].quantity, 0);
         nWheat.text = "" + Mathf.Max(_foodStored[2].quantity, 0);
-        nWheat.text = "" + Mathf.Max(_foodStored[2].quantity, 0);
+        nBread.text = "" + Mathf.Max(_foodStored[3].quantity, 0);
     }
     #endregion
     #region Functions

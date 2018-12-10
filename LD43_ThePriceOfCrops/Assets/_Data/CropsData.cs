@@ -5,7 +5,7 @@ public class CropsData : ScriptableObject {
 
     [Space(10)]
     public int id = 0;
-    public string name = "Nothing";
+    public string Name = "Nothing";
 
     [Space(10)]
     [Header("Time")]
