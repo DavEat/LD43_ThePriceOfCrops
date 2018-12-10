@@ -49,7 +49,6 @@ public class Farmer : MonoBehaviour {
 
         wannaEatTime = GameManager.time + wannaEatEachAtStart;
     }
-	
 	private void Update ()
     {
         if (state == Stats.isBacker)
@@ -193,12 +192,13 @@ public class Farmer : MonoBehaviour {
             canBeSelected = false;
         return canBeSelected;
     }
-    public void Selected()
+    public void Selected(bool displaySelect = true)
     {
         if (state == Stats.isBacker)
             Backery.inst.SetFarmer(null);
 
-        selected.SetActive(true);
+        if (displaySelect)
+            selected.SetActive(true);
         state = Stats.idle;
         //_needToPlant = false;
         _field = null;
@@ -362,7 +362,15 @@ public class Farmer : MonoBehaviour {
             _plantPoint.targetted = false;
 
         this.enabled = false;
+        _agent.enabled = false;
+        GetComponent<Collider>().enabled = false;
+
         GameManager.inst.RemoveFarmer(this);
+
+        AnimTriggerDeath();
+    }
+    public void Death()
+    {
         Destroy(gameObject);
     }
     public void DragObj(Crops c)
@@ -396,6 +404,10 @@ public class Farmer : MonoBehaviour {
     public void AnimSetSpeed(float value)
     {
         _animator.SetFloat("Speed", value);
+    }
+    public void AnimTriggerDeath()
+    {
+        _animator.SetTrigger("Death");
     }
     #endregion
 }

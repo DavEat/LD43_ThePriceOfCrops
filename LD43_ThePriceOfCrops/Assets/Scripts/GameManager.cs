@@ -172,7 +172,7 @@ public class GameManager : MonoBehaviour {
     }
     internal void KillFirstFarmer()
     {
-        _farmers[0].Selected();
+        _farmers[0].Selected(false);
         Lighting.inst.Hit(_farmers[0].transform.position);
         _farmers[0].Kill();
     }
