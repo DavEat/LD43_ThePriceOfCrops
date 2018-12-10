@@ -44,21 +44,25 @@ public class GameManager : MonoBehaviour {
             return;
 
         if (Input.GetMouseButtonDown(0))
-        //    _mouseDownPos = Input.mousePosition;
-        //if (Input.GetMouseButtonUp(0) && Vector2.Distance(_mouseDownPos, Input.mousePosition) < 1.5f)
         {
-            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, _rayMaxDist, _layerMask))
-            {
-                HitSelection(ref hit);
-            }
-            Debug.DrawRay(ray.origin, hit.point, Color.yellow);
+            TrySelelect(_camera.ScreenPointToRay(Input.mousePosition));
+        }
+        else if(Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+        {
+            TrySelelect(_camera.ScreenPointToRay(Input.touches[0].position));
         }
     }
     #endregion
     #region Functions
+    private void TrySelelect(Ray ray)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, _rayMaxDist, _layerMask))
+        {
+            HitSelection(ref hit);
+        }
+        Debug.DrawRay(ray.origin, hit.point, Color.yellow);
+    }
     private void HitSelection(ref RaycastHit hit)
     {
         if (_field != null)
