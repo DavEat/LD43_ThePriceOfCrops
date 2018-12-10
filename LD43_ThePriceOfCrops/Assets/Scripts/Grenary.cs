@@ -10,7 +10,7 @@ public class Grenary : MonoBehaviour
     #region Vars
     private StoredFood[] _foodStored = new StoredFood[4];
 
-    public TextMeshProUGUI nWheat, nPumpkin;
+    public TextMeshProUGUI nWheat, nPumpkin = null, nBread = null;
     #endregion
     #region MonoFunctions
     private void Awake()
@@ -29,6 +29,7 @@ public class Grenary : MonoBehaviour
     private void Update()
     {
         nPumpkin.text = "" + Mathf.Max(_foodStored[1].quantity, 0);
+        nWheat.text = "" + Mathf.Max(_foodStored[2].quantity, 0);
         nWheat.text = "" + Mathf.Max(_foodStored[2].quantity, 0);
     }
     #endregion
