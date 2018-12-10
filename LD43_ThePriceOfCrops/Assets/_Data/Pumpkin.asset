@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Pumpkin
   m_EditorClassIdentifier: 
   id: 1
-  name: Pumpkin
+  Name: Pumpkin
   plantTime: 2
   growTime: 8
   food: 25

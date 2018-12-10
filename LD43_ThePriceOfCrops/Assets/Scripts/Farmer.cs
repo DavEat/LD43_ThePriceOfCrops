@@ -134,7 +134,7 @@ public class Farmer : MonoBehaviour {
                         _stateIcon.UpdateState(StateIcon.States.none);
                     }
                 }
-                
+
                 //If low in food try to find more
             }
             else
@@ -185,8 +185,11 @@ public class Farmer : MonoBehaviour {
             if (Vector3.Distance(_transform.position, GameManager.inst.sacrificePlace.position) < _storeCropsDst) //is at destination
                 Sacrifice.inst.SacrificeFarmer(this);
         }
-        //else if (stats != Stats.idle)
-        //    stats = Stats.idle;
+        else if (state == Stats.idle)
+        {
+            if (Vector3.Distance(_transform.position, GameManager.inst.villageCenter.position) < 3) //is at destination
+                _agent.SetDestination(_transform.position);
+        }
         /*else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Planting") && !_startedPlanting)
         {
             AnimTriggerEndPlant();

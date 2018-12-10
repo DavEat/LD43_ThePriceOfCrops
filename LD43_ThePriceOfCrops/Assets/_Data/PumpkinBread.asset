@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Name: PumpkinBread
   m_EditorClassIdentifier: 
   id: 3
-  name: PumpkinBread
+  Name: PumpkinBread
   plantTime: 5
   growTime: 5
   food: 130
   obj: {fileID: 114114986076374434, guid: ea16c3cce5dec0e4280566568f9409b9, type: 2}
   damaged: {fileID: 0}
+  harvested: {fileID: 0}

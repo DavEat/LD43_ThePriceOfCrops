@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Wheat
   m_EditorClassIdentifier: 
   id: 2
-  name: Wheat
+  Name: Wheat
   plantTime: 3
   growTime: 7
   food: 15
