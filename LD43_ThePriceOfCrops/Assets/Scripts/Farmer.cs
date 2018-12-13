@@ -12,6 +12,8 @@ public class Farmer : MonoBehaviour {
     private Vector3 _targetPosition;
     private bool _foodSendToSacrifice;
 
+    public bool CanBeSelectIt = true;
+
     private Field _field;
     private Field.PlantPoint _plantPoint;
     private int _crtPlantPointIndex = -1;
@@ -32,6 +34,7 @@ public class Farmer : MonoBehaviour {
     [SerializeField] private Transform _dragPosition = null;
     [SerializeField] private int maxEat = 180;
 
+    private bool _isAtHouse;
     private House _targettedHouse;
 
     [SerializeField] private Animator _animator;
@@ -84,10 +87,10 @@ public class Farmer : MonoBehaviour {
         }
         else if (state == Stats.goToHouse)
         {
-            if (_targettedHouse != null && Vector3.Distance(_transform.position, _targettedHouse.door.position) < _storeCropsDst)
+            if (!_isAtHouse && Vector3.Distance(_transform.position, _targettedHouse.door.position) < _storeCropsDst)
             {
+                _isAtHouse = true;
                 _targettedHouse.FarmerArrived(this);
-                _targettedHouse = null;
             }
         }
         else if (wannaEatTime < GameManager.time || _eatAgain)
@@ -202,7 +205,7 @@ public class Farmer : MonoBehaviour {
     public bool CanBeSelected()
     {
         bool canBeSelected = true;
-        if (_needToPlant || _draggedCrops != null || state == Stats.goToEat || state == Stats.goToHouse || _startedHarvesting || _startedPlanting)
+        if (!CanBeSelectIt || _needToPlant || _draggedCrops != null || state == Stats.goToEat || _startedHarvesting || _startedPlanting)
             canBeSelected = false;
         return canBeSelected;
     }
@@ -210,6 +213,13 @@ public class Farmer : MonoBehaviour {
     {
         if (state == Stats.isBacker)
             Backery.inst.SetFarmer(null);
+
+        if (state == Stats.goToHouse)
+        {
+            if (_isAtHouse)
+                _isAtHouse = false;
+            _targettedHouse.FarmerLeaved(this);
+        }
 
         if (displaySelect)
             selected.SetActive(true);
@@ -283,6 +293,7 @@ public class Farmer : MonoBehaviour {
     {
         //_targettedHouse = null;
         state = Stats.idle;
+        CanBeSelectIt = true;
         _agent.SetDestination(GameManager.inst.villageCenter.position);
 
         _stateIcon.UpdateState(StateIcon.States.none);

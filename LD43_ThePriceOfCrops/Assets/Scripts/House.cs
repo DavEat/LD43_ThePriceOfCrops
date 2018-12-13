@@ -33,8 +33,23 @@ public class House : MonoBehaviour
         if (_habitants[0].inside && _habitants[1].inside)
         {
             _habitants[0].farmer.OnlyMouseToPoint(inside.position);
+            _habitants[0].farmer.CanBeSelectIt = false;
             _habitants[1].farmer.OnlyMouseToPoint(inside.position);
+            _habitants[1].farmer.CanBeSelectIt = false;
             StartCoroutine(ReproduceTimer());
+        }
+    }
+    public void FarmerLeaved(Farmer farmer)
+    {
+        if (farmer == _habitants[0].farmer)
+        {
+            _habitants[0].inside = false;
+            _habitants[0].farmer = null;
+        }
+        else if (farmer == _habitants[1].farmer)
+        {
+            _habitants[1].inside = false;
+            _habitants[1].farmer = null;
         }
     }
     private IEnumerator ReproduceTimer()
