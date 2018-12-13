@@ -48,35 +48,36 @@ public class Sacrifice : MonoBehaviour
     {
         while (true)
         {
-            if (GameManager.timeScale == 0)
-                yield return null;
             yield return new WaitForSeconds(1);
-            crtGodsHappiness -= happinessDecreaseBySec;
-
-            float percent = 1 - ((float)crtGodsHappiness / 501); //percent of god a desaster
-
-            
-            float scaleZ = .4f;
-            if (percent > 0)
-                scaleZ = 1 + percent * 2;
-            Vector3 scale = new Vector3(1, 1, scaleZ);
-            _particules[0].localScale = scale;
-            _particules[1].localScale = scale;
-
-            if (nextDisasterMinIn > 0)
-                nextDisasterMinIn -= happinessDecreaseBySec;
-            else if (crtGodsHappiness <= startUnhappyAt)
+            if (GameManager.timeScale != 0)
             {
-                IsUnhappy(percent);
-            }
+                crtGodsHappiness -= happinessDecreaseBySec;
 
-            #if UNITY_EDITOR
-            if (unhappy)
-            {
-                unhappy = false;
-                IsUnhappy(2);
+                float percent = 1 - ((float)crtGodsHappiness / 501); //percent of god a desaster
+
+
+                float scaleZ = .4f;
+                if (percent > 0)
+                    scaleZ = 1 + percent * 2;
+                Vector3 scale = new Vector3(1, 1, scaleZ);
+                _particules[0].localScale = scale;
+                _particules[1].localScale = scale;
+
+                if (nextDisasterMinIn > 0)
+                    nextDisasterMinIn -= happinessDecreaseBySec;
+                else if (crtGodsHappiness <= startUnhappyAt)
+                {
+                    IsUnhappy(percent);
+                }
+
+                #if UNITY_EDITOR
+                if (unhappy)
+                {
+                    unhappy = false;
+                    IsUnhappy(2);
+                }
+                #endif
             }
-            #endif
         }
     }
     internal void IsUnhappy(float percent)

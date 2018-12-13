@@ -3236,6 +3236,11 @@ Prefab:
       propertyPath: m_Name
       value: Farmer (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 195016804231740290, guid: a0c7fb03855f1ee45b0fcf5b46d9794c,
+        type: 2}
+      propertyPath: avoidancePriority
+      value: 45
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0c7fb03855f1ee45b0fcf5b46d9794c, type: 2}
   m_IsPrefabAsset: 0
@@ -4365,6 +4370,11 @@ Prefab:
     - target: {fileID: 4095797678831528, guid: a0c7fb03855f1ee45b0fcf5b46d9794c, type: 2}
       propertyPath: m_RootOrder
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 195016804231740290, guid: a0c7fb03855f1ee45b0fcf5b46d9794c,
+        type: 2}
+      propertyPath: avoidancePriority
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0c7fb03855f1ee45b0fcf5b46d9794c, type: 2}
@@ -20580,6 +20590,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114669749211135348, guid: 47673201cff53d64693ae7092c44d08a,
+        type: 2}
+      propertyPath: _particleSystems.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4558803738818986, guid: 47673201cff53d64693ae7092c44d08a, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -20652,6 +20667,21 @@ Prefab:
       propertyPath: trash
       value: 
       objectReference: {fileID: 1056941787}
+    - target: {fileID: 114669749211135348, guid: 47673201cff53d64693ae7092c44d08a,
+        type: 2}
+      propertyPath: _particleSystems.Array.data[0]
+      value: 
+      objectReference: {fileID: 1342846670}
+    - target: {fileID: 114669749211135348, guid: 47673201cff53d64693ae7092c44d08a,
+        type: 2}
+      propertyPath: _particleSystems.Array.data[1]
+      value: 
+      objectReference: {fileID: 1454263415}
+    - target: {fileID: 114669749211135348, guid: 47673201cff53d64693ae7092c44d08a,
+        type: 2}
+      propertyPath: _particleSystems.Array.data[2]
+      value: 
+      objectReference: {fileID: 1010604044}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47673201cff53d64693ae7092c44d08a, type: 2}
   m_IsPrefabAsset: 0
@@ -23126,6 +23156,16 @@ Prefab:
     - target: {fileID: 4095797678831528, guid: a0c7fb03855f1ee45b0fcf5b46d9794c, type: 2}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 63.335003
+      objectReference: {fileID: 0}
+    - target: {fileID: 195016804231740290, guid: a0c7fb03855f1ee45b0fcf5b46d9794c,
+        type: 2}
+      propertyPath: m_BaseOffset
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 195016804231740290, guid: a0c7fb03855f1ee45b0fcf5b46d9794c,
+        type: 2}
+      propertyPath: avoidancePriority
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0c7fb03855f1ee45b0fcf5b46d9794c, type: 2}
@@ -37735,6 +37775,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4653776154960494, guid: 6ccadda057fb8604eb21f59791873a0c,
     type: 2}
   m_PrefabInternal: {fileID: 1007689622}
+--- !u!198 &1010604044 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198977693461097522, guid: 36075d5baeba5ff479216f6dc92e6d17,
+    type: 2}
+  m_PrefabInternal: {fileID: 874983100}
 --- !u!1001 &1010907184
 Prefab:
   m_ObjectHideFlags: 0
@@ -63670,6 +63715,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4653776154960494, guid: 6ccadda057fb8604eb21f59791873a0c,
     type: 2}
   m_PrefabInternal: {fileID: 1452777224}
+--- !u!198 &1454263415 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198807291432307200, guid: 36075d5baeba5ff479216f6dc92e6d17,
+    type: 2}
+  m_PrefabInternal: {fileID: 874983100}
 --- !u!1001 &1455453422
 Prefab:
   m_ObjectHideFlags: 0
@@ -85377,7 +85427,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2110279247
 MonoBehaviour:
   m_ObjectHideFlags: 0

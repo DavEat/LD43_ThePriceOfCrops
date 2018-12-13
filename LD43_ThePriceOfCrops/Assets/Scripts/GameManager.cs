@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour {
     private bool _sendFoodToGod;
 
     public static float deltaTime, time, timeScale = 1;
+
+    [SerializeField] private ParticleSystem[] _particleSystems;
     #endregion
     #region MonoFunctions
     private void Awake()
@@ -196,6 +198,18 @@ public class GameManager : MonoBehaviour {
     internal bool GetHarvestFoodDestination()
     {
         return _sendFoodToGod;
+    }
+    internal void PauseFarmer(bool pause)
+    {
+        foreach (Farmer farmer in _farmers)
+            farmer.Pause(pause);
+    }
+    internal void PauseParticles(bool pause)
+    {
+        for (int i = 0; i < _particleSystems.Length; i++)
+            if (pause)
+                _particleSystems[i].Pause();
+            else _particleSystems[i].Play();
     }
     #endregion
 }

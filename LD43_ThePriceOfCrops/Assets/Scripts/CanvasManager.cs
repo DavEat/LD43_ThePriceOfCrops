@@ -26,6 +26,8 @@ public class CanvasManager : MonoBehaviour {
     {
         _startedGame = true;
         GameManager.timeScale = 1;
+        GameManager.inst.PauseFarmer(false);
+        GameManager.inst.PauseParticles(false);
     }
     public void Reload()
     {
@@ -39,6 +41,8 @@ public class CanvasManager : MonoBehaviour {
     {
         if (_startedGame)
         {
+            GameManager.inst.PauseFarmer(true);
+            GameManager.inst.PauseParticles(true);
             menu.transform.parent.gameObject.SetActive(!menu.transform.parent.gameObject.activeSelf);
             menu.SetActive(menu.transform.parent.gameObject);
             GameManager.timeScale = menu.activeSelf ? 0 : 1;

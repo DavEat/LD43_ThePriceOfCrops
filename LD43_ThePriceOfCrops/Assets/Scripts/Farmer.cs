@@ -37,23 +37,29 @@ public class Farmer : MonoBehaviour {
     private bool _isAtHouse;
     private House _targettedHouse;
 
-    [SerializeField] private Animator _animator;
+    private Animator _animator;
     private NavMeshAgent _agent;
     private Transform _transform;
 
     public GameObject selected;
-    [SerializeField] private StateIcon _stateIcon; 
+    [SerializeField] private StateIcon _stateIcon;
+
+    private float _startAnimatorSpeed = 0, _startAgentSpeed;
     #endregion
     #region MonoFunctions
     private void Start ()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _animator = GetComponent<Animator>();
         _transform = GetComponent<Transform>();
 
         wannaEatTime = GameManager.time + wannaEatEachAtStart;
 
         int minPriority = 30, maxPriority = 60;
         _agent.avoidancePriority = Random.Range(minPriority, maxPriority);
+        _startAgentSpeed = _agent.speed;
+
+        _startAnimatorSpeed = _animator.speed;
     }
 	private void Update ()
     {
@@ -98,7 +104,7 @@ public class Farmer : MonoBehaviour {
         }
         else if (wannaEatTime < GameManager.time || _eatAgain)
         {
-            if (state == Stats.goToEat)
+            if (state == Stats.goToEat) //Already targettted a food
             {
                 if (_wannaEatTargetIds[0] == -1)
                 {
@@ -140,8 +146,6 @@ public class Farmer : MonoBehaviour {
                         _stateIcon.UpdateState(StateIcon.States.none);
                     }
                 }
-
-                //If low in food try to find more
             }
             else
             {
@@ -201,6 +205,7 @@ public class Farmer : MonoBehaviour {
             AnimTriggerEndPlant();
             Debug.Log("ForceKill : Planting");
         }*/
+
         AnimSetSpeed(_agent.velocity.magnitude);
     }
     #endregion
@@ -297,6 +302,7 @@ public class Farmer : MonoBehaviour {
         //_targettedHouse = null;
         state = Stats.idle;
         CanBeSelectIt = true;
+        _isAtHouse = false;
         _agent.SetDestination(GameManager.inst.villageCenter.position);
 
         _stateIcon.UpdateState(StateIcon.States.none);
@@ -421,6 +427,11 @@ public class Farmer : MonoBehaviour {
     public void DragObj(Crops c)
     {
         c.Drag(_dragPosition);
+    }
+    public void Pause(bool pause)
+    {
+        _animator.speed = pause ? 0 : _startAnimatorSpeed;
+        _agent.speed = pause ? 0 : _startAgentSpeed;
     }
     #endregion
     #region AnimationFunction
