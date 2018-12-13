@@ -142,10 +142,19 @@ public class GameManager : MonoBehaviour {
     }
     private void FarmerClicked(Farmer farmer)
     {        
-        if (farmer.CanBeSelected() && _selectedFarmer == null)
+        if (farmer.CanBeSelected())
         {
-            _selectedFarmer = farmer;
-            _selectedFarmer.Selected();
+            if (_selectedFarmer == null)
+            {
+                _selectedFarmer = farmer;
+                _selectedFarmer.Selected();
+            }
+            else if (_selectedFarmer != farmer)
+            {
+                _selectedFarmer.selected.SetActive(false);
+                _selectedFarmer = farmer;
+                _selectedFarmer.Selected();
+            }
         }
     }
     private void MoveSelectedFarmer(Vector3 to)
