@@ -51,6 +51,9 @@ public class Farmer : MonoBehaviour {
         _transform = GetComponent<Transform>();
 
         wannaEatTime = GameManager.time + wannaEatEachAtStart;
+
+        int minPriority = 30, maxPriority = 60;
+        _agent.avoidancePriority = Random.Range(minPriority, maxPriority);
     }
 	private void Update ()
     {
